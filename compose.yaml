@@ -11,5 +11,7 @@ services:
       bash -c "npm start"
     ports:
         - "3000:3000"
+    env_file:
+      - .env.development
     environment:
       - WATCHPACK_POLLING=true

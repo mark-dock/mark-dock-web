@@ -1,21 +1,16 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Login from "./Login/Login";
+import Home from "./Home/Home";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          Documentation Platform Frontend
-        </p>
-      </header>
-    </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/">
+              <Route index element={<Home />} />
+            <Route path="login" element={<Login />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
   );
 }
-
-export default App;
