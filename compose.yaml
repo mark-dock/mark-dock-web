@@ -1,0 +1,15 @@
+services:
+  frontend:
+    container_name: react-frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    command:
+      bash -c "npm start"
+    ports:
+        - "3000:3000"
+    environment:
+      - WATCHPACK_POLLING=true
