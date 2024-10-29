@@ -2,6 +2,29 @@ import React, {useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import axiosInstance from "../axiosInstance";
 
+interface AxiosError {
+    config: any;
+    response?: {
+        status: number;
+    };
+}
+
+const handleResponse = (response: any, navigate: any, setShowError: any) => {
+    if (response.status === 202) {
+        navigate('/dashboard');
+    } else {
+        setShowError(true);
+    }
+};
+
+const handleError = (error: AxiosError, setShowError: any) => {
+    if (error.response && error.response.status === 403) {
+        setShowError(true);
+    } else {
+        console.error("An unexpected error occurred:", error);
+    }
+};
+
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,16 +35,16 @@ export default function Login() {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const response = await axiosInstance.post("/auth/login", {
-            email,
-            password,
-            provider: "LOCAL"
-        });
+        try {
+            const response = await axiosInstance.post("/auth/login", {
+                email,
+                password,
+                provider: "LOCAL"
+            });
 
-        if (response.status === 202) {
-            navigate('/dashboard');
-        } else {
-            setShowError(true);
+            handleResponse(response, navigate, setShowError);
+        } catch (error: any) {
+            handleError(error as AxiosError, setShowError);
         }
     };
 
