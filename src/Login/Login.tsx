@@ -1,27 +1,27 @@
 import React, {useState} from 'react';
+import {useNavigate} from "react-router-dom";
+import axiosInstance from "../axiosInstance";
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showError, setShowError] = useState(false);
 
-    const API_URL = process.env.REACT_APP_API_URL;
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const response = await fetch(`${API_URL}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password, provider: "LOCAL" }),
+        const response = await axiosInstance.post("/auth/login", {
+            email,
+            password,
+            provider: "LOCAL"
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
+        if (response.status === 202) {
+            navigate('/dashboard');
         } else {
-            console.error('Login failed');
+            setShowError(true);
         }
     };
 
@@ -82,6 +82,16 @@ export default function Login() {
                                 Sign in
                             </button>
                         </div>
+
+                        <div className="text-sm text-center text-blue-500">
+                            <a href="/register"> Dont have an account? Register here. </a>
+                        </div>
+
+                        {showError && (
+                            <div className="text-sm text-center text-red-400">
+                                Email or password incorrect. Please try again.
+                            </div>
+                        )}
                     </form>
                 </div>
             </div>
