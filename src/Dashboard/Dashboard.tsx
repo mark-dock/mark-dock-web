@@ -1,5 +1,7 @@
 import {useEffect, useState} from "react";
-import axiosInstance from "../axiosInstance";
+import axiosInstance from "../Config/axiosInstance";
+
+import Logout from "../Components/Buttons/Logout";
 
 export default function Dashboard() {
     const [userInfo, setUserInfo] = useState<{ user_id: string; name: string; email: string } | null>(null);
@@ -28,6 +30,8 @@ export default function Dashboard() {
                         <p>Email: {userInfo.email}</p>
                     </div>
                 )}
+
+                < Logout />
             </div>
         </div>
     );
