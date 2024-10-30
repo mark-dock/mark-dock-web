@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const axiosInstance = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
     withCredentials: true,
 });
 
-const handleTokenRefresh = async (originalRequest: any) => {
+const handleTokenRefresh = async (originalRequest: InternalAxiosRequestConfig): Promise<AxiosResponse | void> => {
     try {
         const response = await axiosInstance.post('auth/refresh');
         if (response.status === 202) {
@@ -25,17 +25,11 @@ const redirectToLogin = () => {
 
 axiosInstance.interceptors.response.use(
     response => response,
-    async error => {
-        const originalRequest = error.config;
+    async (error: AxiosError) => {
+        const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (error.response?.status === 401 && originalRequest.url !== 'auth/refresh' && !originalRequest._retry) {
             originalRequest._retry = true;
-
-            if (originalRequest.url === 'auth/refresh') {
-                redirectToLogin();
-                return Promise.reject(error);
-            }
-
             return handleTokenRefresh(originalRequest);
         }
 

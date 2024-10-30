@@ -4,6 +4,7 @@ import Home from "./Home/Home";
 import Dashboard from "./Dashboard/Dashboard";
 import Register from "./Register/Register";
 import PublicRoute from "./Config/publicRoutes";
+import PrivateRoute from "./Config/privateRoutes";
 
 export default function App() {
   return (
@@ -36,7 +37,14 @@ export default function App() {
                     </PublicRoute>
                 }
             />
-              <Route path="dashboard" element={<Dashboard />} />
+          <Route
+                path="/dashboard"
+                element={
+                    <PrivateRoute>
+                        <Dashboard />
+                    </PrivateRoute>
+                }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

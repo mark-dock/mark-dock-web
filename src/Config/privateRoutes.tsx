@@ -2,12 +2,12 @@ import { useEffect, useState, ReactNode, ReactElement } from "react";
 import { Navigate } from "react-router-dom";
 import axiosInstance from "./axiosInstance";
 
-interface PublicRouteProps {
+interface PrivateRouteProps {
     children: ReactNode;
 }
 
-const PublicRoute = ({ children }: PublicRouteProps): ReactElement => {
-    const [isPublicAuthenticated, setIsPublicAuthenticated] = useState<boolean | null>(null);
+const PrivateRoute = ({ children }: PrivateRouteProps): ReactElement => {
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -26,19 +26,19 @@ const PublicRoute = ({ children }: PublicRouteProps): ReactElement => {
                 const { isAuthorized, previouslyAuthorized } = await checkAuthStatus();
 
                 if (isAuthorized) {
-                    setIsPublicAuthenticated(false);
+                    setIsAuthenticated(true);
                 } else if (previouslyAuthorized) {
                     const tokenRefreshed = await refreshAuthToken();
                     if (tokenRefreshed) {
-                        setIsPublicAuthenticated(false);
+                        setIsAuthenticated(true);
                     } else {
-                        setIsPublicAuthenticated(true);
+                        setIsAuthenticated(false);
                     }
                 } else {
-                    setIsPublicAuthenticated(true);
+                    setIsAuthenticated(false);
                 }
             } catch (error) {
-                setIsPublicAuthenticated(true);
+                setIsAuthenticated(false);
             } finally {
                 setIsLoading(false);
             }
@@ -51,7 +51,7 @@ const PublicRoute = ({ children }: PublicRouteProps): ReactElement => {
         return <div></div>;
     }
 
-    return isPublicAuthenticated ? children as ReactElement : <Navigate to="/dashboard" replace />;
+    return isAuthenticated ? children as ReactElement : <Navigate to="/login" replace />;
 };
 
-export default PublicRoute;
+export default PrivateRoute;
