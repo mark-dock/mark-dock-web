@@ -1,11 +1,12 @@
-# Documentation Platform Frontend
+# MarkDock Web Repo
+This repository stores all the code for the MarkDock web application.
 
 ## Getting Started
 
 1. Clone the repository
 
 ```bash
-git clone git@github.com:documentation-platform/documentation-platform-frontend.git
+git clone git@github.com:mark-dock/mark-dock-web.git
 ```
 
 2. Create a `.env.development` file in the root directory of the project. You can copy the contents of the `.env.development.example` file and replace the values with your own.
