@@ -14,7 +14,7 @@ export default function Home() {
                     MarkDock
                 </h2>
                 <p className="mt-2 text-center text-sm text-gray-600 max-w">
-                    Group documentation, the way it should be.
+                    Group documentation, the way it d be.
                 </p>
                 <button
                     onClick={handleLoginRedirect}
