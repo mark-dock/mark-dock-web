@@ -9,7 +9,7 @@ This repository stores all the code for the MarkDock web application.
 git clone git@github.com:mark-dock/mark-dock-web.git
 ```
 
-2. Create a `.env.development` file in the root directory of the project. You can copy the contents of the `.env.development.example` file and replace the values with your own.
+2. Verify the API URL in the `.env.development` file. The API URL should be the URL of your local MarkDock API server.
 
 3. Run the docker container with the following command
 
