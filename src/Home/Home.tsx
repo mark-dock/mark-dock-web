@@ -13,6 +13,9 @@ export default function Home() {
                 <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                     MarkDock
                 </h2>
+                <p className="mt-2 text-center text-sm text-gray-600 max-w">
+                    Group documentation, the way it should be.
+                </p>
                 <button
                     onClick={handleLoginRedirect}
                     className="mt-4 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
