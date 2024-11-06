@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../Config/axiosInstance";
-
+import CreateOrg from "../Components/CreateOrg";
 import Logout from "../Components/Buttons/Logout";
 
 export default function Dashboard() {
@@ -32,6 +32,7 @@ export default function Dashboard() {
                 )}
 
                 < Logout />
+                <CreateOrg />
             </div>
         </div>
     );
