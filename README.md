@@ -1,6 +1,10 @@
 # MarkDock Web Repo
 This repository stores all the code for the MarkDock web application.
 
+## Documentation
+- [Deployment Guide](./docs/deployment.md)
+- [CI/CD Pipeline Guide](./docs/ci-cd.md)
+
 ## Getting Started
 
 1. Clone the repository
