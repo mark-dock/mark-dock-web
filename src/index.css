@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .bg-docs {
+    @apply relative;
+  }
+  
+  .bg-docs::before,
+  .bg-docs::after {
+    @apply content-[''] absolute top-0 w-1/2 h-full bg-cover bg-no-repeat opacity-15 blur-sm -z-10;
+  }
+
+  .bg-docs::before {
+    @apply left-0;
+    transform: rotate(15deg) translateX(-15%) scale(1.4);
+    transform-origin: bottom left;
+    background-image: url('../public/images/docblur.jpg');
+  }
+
+  .bg-docs::after {
+    @apply right-0;
+    transform: rotate(-15deg) translateX(15%) scale(1.4);
+    transform-origin: bottom right;
+    background-image: url('../public/images/docblur.jpg');
+  }
+}
