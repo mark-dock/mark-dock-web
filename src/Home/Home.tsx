@@ -14,8 +14,29 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-scheme-100 text-white flex items-center justify-center relative overflow-hidden">
-            {/* Background markdown documents */}
-            <div className="bg-docs absolute inset-0" />
+            {/* Background image, rotated, blurred*/}
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="/images/docblur2.jpg"
+                    alt="Background"
+                    className="w-half h-full object-cover"
+                    style={{
+                        transform: 'rotate(-10deg) scale(1.4) translateX(-30%)',
+                        filter: 'blur(10px)'
+                    }}
+                />
+            </div>
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="/images/docblur.jpg"
+                    alt="Background"
+                    className="w-half h-full object-cover"
+                    style={{
+                        transform: 'rotate(-10deg) scale(1.4) translateX(180%) translateY(20%)',
+                        filter: 'blur(10px)'
+                    }}
+                />
+            </div>
 
             {/* Main content */}
             <main className="relative z-10 w-half max-w-md px-6">
@@ -25,9 +46,9 @@ export default function Home() {
                         <img
                             src="/images/logo.png"
                             alt="MarkDock Logo"
-                            className="w-10 h-10"
+                            className="w-12 h-13"
                         />
-                        <h1 className="text-3xl font-bold text-scheme-500">MarkDock</h1>
+                        <h1 className="text-6xl font-bold text-scheme-500">MarkDock</h1>
                     </div>
 
                     {/* Subtitle */}
@@ -39,13 +60,13 @@ export default function Home() {
                     <div className="w-full space-y-3">
                         <button
                             onClick={handleLoginRedirect}
-                            className="w-full bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded transition-colors"
+                            className="w-full bg-scheme-300 hover:bg-scheme-400 text-scheme-500 px-6 py-2 rounded transition-colors"
                         >
                             Log In
                         </button>
                         <button
                             onClick={handleSignUpRedirect}
-                            className="w-full bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded transition-colors"
+                            className="w-full bg-scheme-200 hover:bg-scheme-300 text-scheme-500 px-6 py-2 rounded transition-colors"
                         >
                             Sign Up
                         </button>
