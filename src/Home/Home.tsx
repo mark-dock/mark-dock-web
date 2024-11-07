@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import '../index.css';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -7,22 +8,58 @@ export default function Home() {
         navigate('/login');
     };
 
+    const handleSignUpRedirect = () => {
+        navigate('/register');
+    };
+
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <h1 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                    MarkDock
-                </h1>
-                <p className="mt-2 text-center text-sm text-gray-600 max-w">
-                    Group documentation, the way it should be.
-                </p>
-                <button
-                    onClick={handleLoginRedirect}
-                    className="mt-4 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                    Go to Login
-                </button>
+        <div className="min-h-screen bg-scheme-100 text-white flex items-center relative overflow-hidden justify-start">
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="/images/docblur.jpg"
+                    alt="Background"
+                    className="w-half h-full object-cover"
+                    style={{
+                        transform: 'rotate(10deg) scale(1.4) translateX(120%) translateY(-20%)',
+                        filter: 'blur(7px)'
+                    }}
+                />
             </div>
+            {/* Main content */}
+            <main className="relative z-10 w-1/4 px-6 ml-48"> {/* Changed from w-half max-w-md */}
+                <div className="flex flex-col text-left space-y-1 mb-32"> {/* Removed items-center */}
+                    {/* Logo and title */}
+                    <div className="flex items-left justify-left space-x-3"> {/* Added justify-center */}
+                        <img
+                            src="/images/logo.png"
+                            alt="MarkDock Logo"
+                            className="w-12 h-13"
+                        />
+                        <h1 className="text-6xl font-bold text-scheme-500">MarkDock</h1>
+                    </div>
+
+                    {/* Subtitle */}
+                    <p className="text-lg text-scheme-300">
+                        Group documentation, the way it should be.
+                    </p>
+
+                    {/* Buttons */}
+                    <div className="w-1/2 space-y-3 py-8">
+                        <button
+                            onClick={handleLoginRedirect}
+                            className="w-full bg-scheme-250 hover:bg-scheme-400 text-left text-scheme-500 hover:text-scheme-500 px-6 py-2 rounded transition-colors"
+                        >
+                            Log In
+                        </button>
+                        <button
+                            onClick={handleSignUpRedirect}
+                            className="w-full bg-scheme-200 hover:bg-scheme-400 text-left text-scheme-500 hover:text-scheme-500 px-6 py-2 rounded transition-colors"
+                        >
+                            Sign Up
+                        </button>
+                    </div>
+                </div>
+            </main>
         </div>
     );
-}
+};

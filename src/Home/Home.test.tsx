@@ -23,7 +23,7 @@ test('renders Home component', () => {
     const descriptionElement = screen.getByText(/Group documentation, the way it should be./i);
     expect(descriptionElement).toBeInTheDocument();
 
-    const buttonElement = screen.getByRole('button', { name: /Go to Login/i });
+    const buttonElement = screen.getByRole('button', { name: /Log In/i });
     expect(buttonElement).toBeInTheDocument();
 });
 
@@ -34,7 +34,7 @@ test('navigates to login on button click', async () => {
         </MemoryRouter>
     );
 
-    const buttonElement = screen.getByRole('button', { name: /Go to Login/i });
+    const buttonElement = screen.getByRole('button', { name: /Log In/i });
     fireEvent.click(buttonElement);
 
     expect(mockNavigate).toHaveBeenCalledWith('/login');
