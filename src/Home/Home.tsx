@@ -20,8 +20,8 @@ export default function Home() {
                     alt="Background"
                     className="w-half h-full object-cover"
                     style={{
-                        transform: 'rotate(-8deg) scale(1.4) translateX(120%) translateY(20%)',
-                        filter: 'blur(3px)'
+                        transform: 'rotate(10deg) scale(1.4) translateX(120%) translateY(-20%)',
+                        filter: 'blur(7px)'
                     }}
                 />
             </div>
@@ -40,20 +40,20 @@ export default function Home() {
 
                     {/* Subtitle */}
                     <p className="text-lg text-scheme-300">
-                        Group documentation, the easy way.
+                        Group documentation, the way it should be.
                     </p>
 
                     {/* Buttons */}
                     <div className="w-1/2 space-y-3 py-8">
                         <button
                             onClick={handleLoginRedirect}
-                            className="w-full bg-scheme-300 hover:bg-scheme-400 text-left text-scheme-500 hover:text-scheme-500 px-6 py-2 rounded transition-colors"
+                            className="w-full bg-scheme-250 hover:bg-scheme-400 text-left text-scheme-500 hover:text-scheme-500 px-6 py-2 rounded transition-colors"
                         >
                             Log In
                         </button>
                         <button
                             onClick={handleSignUpRedirect}
-                            className="w-full bg-scheme-200 hover:bg-scheme-500 text-left text-scheme-500 hover:text-scheme-100 px-6 py-2 rounded transition-colors"
+                            className="w-full bg-scheme-200 hover:bg-scheme-400 text-left text-scheme-500 hover:text-scheme-500 px-6 py-2 rounded transition-colors"
                         >
                             Sign Up
                         </button>
