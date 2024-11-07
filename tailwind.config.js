@@ -15,7 +15,7 @@ module.exports = {
       gray: colors.gray,
       blue: colors.blue,
       red: colors.red,
-      neutral: colors.trueGray,
+      neutral: colors.neutral,
       'scheme': {
         100: '#0d1b2a',
         200: '#1b263b',
