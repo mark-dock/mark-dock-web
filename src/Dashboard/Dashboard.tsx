@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../Config/axiosInstance";
-
 import Logout from "../Components/Buttons/Logout";
+import UserOrgs from "../Components/UserOrgs";
+import CreateOrg from "../Components/CreateOrg";
 
 export default function Dashboard() {
     const [userInfo, setUserInfo] = useState<{ user_id: string; name: string; email: string } | null>(null);
@@ -30,8 +31,9 @@ export default function Dashboard() {
                         <p>Email: {userInfo.email}</p>
                     </div>
                 )}
-
+                <UserOrgs/>
                 < Logout />
+                <CreateOrg/>
             </div>
         </div>
     );
