@@ -51,7 +51,15 @@ const PublicRoute = ({ children }: PublicRouteProps): ReactElement => {
         return <div></div>;
     }
 
-    return isPublicAuthenticated ? children as ReactElement : <Navigate to="/dashboard" replace />;
+    // Allow access to specific public routes like /invite
+    const publicRoutes = ["/invite"];
+    const currentPath = window.location.pathname;
+    if (publicRoutes.includes(currentPath)) {
+        return children as ReactElement;
+    }
+
+    // Redirect authenticated users to the dashboard
+    return isPublicAuthenticated ? (children as ReactElement) : <Navigate to="/dashboard" replace />;
 };
 
 export default PublicRoute;

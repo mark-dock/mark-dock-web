@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../Config/axiosInstance";
+import CreateOrgInviteButton from "./Buttons/CreateOrgInviteButton";
+import OrgMembers from "./OrgMembers";
+import OrgInviteLinks from "./OrgInviteLinks";
 
-// Define an interface for the Organization object
 interface Member {
     userId: string;
     access: string;
@@ -11,30 +13,30 @@ interface Organization {
     id: number;
     name: string;
     access: string;
+    accessId: number;
     createdAt: string;
     updatedAt: string;
-    members?: Member[]; // Optional field for members, only for admins
+    members: Member[];  
 }
 
-export default function UserOrgs() {
-    const [organizations, setOrganizations] = useState<Organization[]>([]); // Explicitly type the state
+export default function ManageOrgs() {
+    const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    //gets a list of orgs the user belongs to and details about each org
     useEffect(() => {
-        // Fetch organizations when the component is mounted
         const fetchOrganizations = async () => {
             try {
-                const response = await axiosInstance.get('/organization/get');
-
+                const response = await axiosInstance.get("/organization/get");
                 if (response.status === 200) {
                     setOrganizations(response.data.organizations);
                 } else {
-                    throw new Error('Failed to fetch organizations');
+                    throw new Error("Failed to fetch organizations");
                 }
             } catch (error) {
-                console.error('Error fetching organizations:', error);
-                setError('Error fetching organizations');
+                console.error("Error fetching organizations:", error);
+                setError("Error fetching organizations");
             } finally {
                 setIsLoading(false);
             }
@@ -43,7 +45,6 @@ export default function UserOrgs() {
         fetchOrganizations();
     }, []);
 
-    // Render the component
     return (
         <div className="flex justify-center items-center h-full">
             {isLoading ? (
@@ -60,19 +61,10 @@ export default function UserOrgs() {
                                 <p>Created at: {new Date(org.createdAt).toLocaleString()}</p>
                                 <p>Updated at: {new Date(org.updatedAt).toLocaleString()}</p>
                                 <p>Access: {org.access}</p>
-                                {org.members && org.members.length > 0 && (
-                                    <div className="mt-2">
-                                        <h4 className="font-semibold">Members:</h4>
-                                        <ul>
-                                            {org.members.map((member) => (
-                                                <li key={member.userId} className="ml-4">
-                                                    <p>User ID: {member.userId}</p>
-                                                    <p>Access: {member.access}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+
+                                {org.accessId === 1 && <OrgMembers members={org.members} />}
+                                {org.accessId === 1 && <CreateOrgInviteButton organizationId={org.id} />}
+                                {org.accessId === 1 && <OrgInviteLinks orgId={org.id.toString()} />}
                             </li>
                         ))}
                     </ul>
@@ -81,4 +73,5 @@ export default function UserOrgs() {
         </div>
     );
 }
+
 
