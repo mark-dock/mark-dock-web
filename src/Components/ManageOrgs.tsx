@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../Config/axiosInstance";
 import CreateOrgInviteButton from "./Buttons/CreateOrgInviteButton";
 import OrgMembers from "./OrgMembers";
+import OrgInviteLinks from "./OrgInviteLinks";
 
 interface Member {
     userId: string;
@@ -12,6 +13,7 @@ interface Organization {
     id: number;
     name: string;
     access: string;
+    accessId: number;
     createdAt: string;
     updatedAt: string;
     members: Member[];  
@@ -60,8 +62,9 @@ export default function ManageOrgs() {
                                 <p>Updated at: {new Date(org.updatedAt).toLocaleString()}</p>
                                 <p>Access: {org.access}</p>
 
-                                <CreateOrgInviteButton organizationId={org.id} />
-                                <OrgMembers members={org.members} />
+                                {org.accessId === 1 && <OrgMembers members={org.members} />}
+                                {org.accessId === 1 && <CreateOrgInviteButton organizationId={org.id} />}
+                                {org.accessId === 1 && <OrgInviteLinks orgId={org.id.toString()} />}
                             </li>
                         ))}
                     </ul>
