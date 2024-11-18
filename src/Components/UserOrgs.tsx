@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../Config/axiosInstance";
 
-// Define an interface for the Organization object
 interface Member {
     userId: string;
     access: string;
@@ -13,28 +12,28 @@ interface Organization {
     access: string;
     createdAt: string;
     updatedAt: string;
-    members?: Member[]; // Optional field for members, only for admins
+    members?: Member[];
 }
 
 export default function UserOrgs() {
-    const [organizations, setOrganizations] = useState<Organization[]>([]); // Explicitly type the state
+    const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [inviteLinks, setInviteLinks] = useState<{ [orgId: number]: string }>({}); // Store invite links per organization
+    const [isCreating, setIsCreating] = useState<{ [orgId: number]: boolean }>({}); // Track loading state for each org
 
     useEffect(() => {
-        // Fetch organizations when the component is mounted
         const fetchOrganizations = async () => {
             try {
-                const response = await axiosInstance.get('/organization/get');
-
+                const response = await axiosInstance.get("/organization/get");
                 if (response.status === 200) {
                     setOrganizations(response.data.organizations);
                 } else {
-                    throw new Error('Failed to fetch organizations');
+                    throw new Error("Failed to fetch organizations");
                 }
             } catch (error) {
-                console.error('Error fetching organizations:', error);
-                setError('Error fetching organizations');
+                console.error("Error fetching organizations:", error);
+                setError("Error fetching organizations");
             } finally {
                 setIsLoading(false);
             }
@@ -43,7 +42,32 @@ export default function UserOrgs() {
         fetchOrganizations();
     }, []);
 
-    // Render the component
+    const createInviteLink = async (organizationId: number, accessId: number) => {
+        setIsCreating((prev) => ({ ...prev, [organizationId]: true }));
+
+        try {
+            const response = await axiosInstance.post(
+                `/organization/${organizationId}/create-invite-link`,
+                null,
+                { params: { accessId } }
+            );
+
+            if (response.status === 201) {
+                setInviteLinks((prev) => ({
+                    ...prev,
+                    [organizationId]: response.data.inviteLink,
+                }));
+            } else {
+                throw new Error("Failed to create invite link");
+            }
+        } catch (error) {
+            console.error(`Error creating invite link for org ${organizationId}:`, error);
+            setError("Error creating invite link");
+        } finally {
+            setIsCreating((prev) => ({ ...prev, [organizationId]: false }));
+        }
+    };
+
     return (
         <div className="flex justify-center items-center h-full">
             {isLoading ? (
@@ -60,19 +84,22 @@ export default function UserOrgs() {
                                 <p>Created at: {new Date(org.createdAt).toLocaleString()}</p>
                                 <p>Updated at: {new Date(org.updatedAt).toLocaleString()}</p>
                                 <p>Access: {org.access}</p>
-                                {org.members && org.members.length > 0 && (
-                                    <div className="mt-2">
-                                        <h4 className="font-semibold">Members:</h4>
-                                        <ul>
-                                            {org.members.map((member) => (
-                                                <li key={member.userId} className="ml-4">
-                                                    <p>User ID: {member.userId}</p>
-                                                    <p>Access: {member.access}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+
+                                {/* Show invite link if created */}
+                                {inviteLinks[org.id] && (
+                                    <p className="text-green-600 mt-2">
+                                        Invite Link: <a href={inviteLinks[org.id]} target="_blank" rel="noopener noreferrer">{inviteLinks[org.id]}</a>
+                                    </p>
                                 )}
+
+                                {/* Button to create invite link */}
+                                <button
+                                    onClick={() => createInviteLink(org.id, 1)} // Replace `1` with dynamic access ID as needed
+                                    disabled={isCreating[org.id]}
+                                    className="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-600 disabled:opacity-50"
+                                >
+                                    {isCreating[org.id] ? "Creating..." : "Create Invite Link"}
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -81,4 +108,5 @@ export default function UserOrgs() {
         </div>
     );
 }
+
 
