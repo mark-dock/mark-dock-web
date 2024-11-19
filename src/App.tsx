@@ -6,6 +6,7 @@ import UserSettings from "./UserSettings/UserSettings";
 import Register from "./Register/Register";
 import PublicRoute from "./Config/publicRoutes";
 import PrivateRoute from "./Config/privateRoutes";
+import InvitePage from "./InvitePage";
 
 export default function App() {
     return (
@@ -54,8 +55,17 @@ export default function App() {
                             </PrivateRoute>
                         }
                     />
-                </Route>
-            </Routes>
-        </BrowserRouter>
-    );
+                    <Route
+                        path="invite"
+                        element={
+                            <PublicRoute>
+                                <InvitePage />
+                            </PublicRoute>
+                        }
+                    />
+              </Route>
+          </Routes>
+      </BrowserRouter>
+  );
 }
+

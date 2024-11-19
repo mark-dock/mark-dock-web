@@ -2,10 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
 import Logout from "../Components/Buttons/Logout";
-import UserOrgs from "../Components/UserOrgs";
 import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
+import ManageOrgs from "../Components/ManageOrgs";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function Dashboard() {
                         </button>
                     </div>
                     <div className="space-y-6">
-                        <UserOrgs />
+                        <ManageOrgs />
                         <CreateOrg />
                     </div>
                 </div>
