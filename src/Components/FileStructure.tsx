@@ -3,7 +3,7 @@ import axiosInstance from '../Config/axiosInstance';
 
 export default function FileStructure() {
     return (
-        <div className="bg-scheme-200 rounded-lg shadow p-6">
+        <div className="mx-16 my-6 bg-scheme-200 rounded-lg shadow p-6">
             <div className="space-y-3 text-scheme-500">
                 {/* Root Folder */}
                 <div className="flex items-center">
@@ -12,6 +12,8 @@ export default function FileStructure() {
                     </svg>
                     <span className="ml-2 font-medium">docs</span>
                 </div>
+
+                <hr className="border border-scheme-250" />
 
                 {/* Nested Items */}
                 <div className="ml-6 space-y-3">
@@ -23,6 +25,8 @@ export default function FileStructure() {
                         <span className="ml-2">project-a</span>
                     </div>
 
+                    <hr className="border border-scheme-250" />
+
                     {/* Project B Folder */}
                     <div className="flex items-center">
                         <svg className="w-6 h-6 text-scheme-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,6 +34,8 @@ export default function FileStructure() {
                         </svg>
                         <span className="ml-2">project-b</span>
                     </div>
+
+                    <hr className="border border-scheme-250" />
 
                     {/* API Folder */}
                     <div className="ml-6 space-y-3">
@@ -39,6 +45,8 @@ export default function FileStructure() {
                             </svg>
                             <span className="ml-2">api</span>
                         </div>
+
+                        <hr className="border border-scheme-250" />
 
                         {/* API Version Folder */}
                         <div className="ml-6">

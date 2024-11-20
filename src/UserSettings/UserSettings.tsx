@@ -1,4 +1,5 @@
 import React from 'react';
+import Logout from "../Components/Buttons/Logout";
 
 export default function UserSettings() {
     return (
@@ -23,6 +24,7 @@ export default function UserSettings() {
 
                 <button>Save</button>
             </form>
+            <Logout />
         </div>
     );
 }

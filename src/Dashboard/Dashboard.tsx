@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
-import Logout from "../Components/Buttons/Logout";
 import UserOrgs from "../Components/UserOrgs";
 import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
@@ -30,10 +29,10 @@ export default function Dashboard() {
         <div className="relative min-h-screen bg-scheme-100">
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 h-full w-128 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
-                <div className="p-6 bg-scheme-250 min-h-screen text-scheme-500">
+                <div className="p-6 min-h-screen text-scheme-500">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-bold text-scheme-500">Organization</h2>
                         <button
@@ -53,22 +52,36 @@ export default function Dashboard() {
             </div>
 
             {/* Main Content */}
-            <div className="mx-auto px-16 py-6">
+            <div className="mx-auto">
+                {isSidebarOpen && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-10"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                )}
+                {/* Sidebar - update z-index to be above overlay */}
+                <div
+                    className={`fixed top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out z-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                        }`}
+                >
+                    {/* Rest of sidebar content remains the same */}
+                </div>
                 {/* Top Bar */}
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex px-16 py-6 justify-between items-center mb-8 bg-scheme-200">
                     {/* Organization Info */}
                     <button
                         onClick={() => setIsSidebarOpen(true)}
-                        className="flex items-center hover:bg-scheme-200 rounded-lg p-2 transition-colors duration-200"
+                        className="flex items-center hover:bg-scheme-250 rounded-lg p-2 transition-colors duration-200"
                     >
                         <img src="/api/placeholder/40/40" alt="Organization Logo" className="w-10 h-10 rounded-full" />
                         <div className="ml-3 flex flex-col items-start">
                             <h1 className="text-xl font-bold text-scheme-500">Organization Name</h1>
-                            <p className="text-sm text-scheme-300">Access Level</p>
+                            <p className="text-sm text-scheme-400">Access Level</p>
                         </div>
                     </button>
 
-                    {/* Search Bar */}
+                    {/* Search Bar and MarkDock text next to each other */}
+                    {/*<h1 className="text-4xl font-bold text-scheme-500">MarkDock</h1>*/}
                     <div className="relative">
                         <input
                             type="text"
@@ -86,21 +99,18 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between space-x-8">
                         <button
                             onClick={openUserSettings}
-                            className="flex items-center hover:bg-scheme-200 rounded-lg p-2 transition-colors duration-200">
+                            className="flex items-center hover:bg-scheme-250 rounded-lg p-2 transition-colors duration-200">
                             <span className="text-right mr-3">
                                 <p className="font-medium text-scheme-500">{userInfo?.name}</p>
-                                <p className="text-sm text-scheme-300">{userInfo?.email}</p>
+                                <p className="text-sm text-scheme-400">{userInfo?.email}</p>
                             </span>
                             <img src="/api/placeholder/40/40" alt="User Avatar" className="w-10 h-10 rounded-full" />
                         </button>
-                        <Logout />
                     </div>
                 </div>
 
-                <hr className="border border-scheme-200 mb-4" />
-
                 {/* Recent Files Section */}
-                <section className="mb-8">
+                <section className="mb-8 px-16">
                     <h2 className="text-xl font-semibold mb-4 text-scheme-500">Recent Files</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
                         <FileCard />
@@ -109,7 +119,7 @@ export default function Dashboard() {
                         <FileCard />
                         <FileCard />
                         {/* Arrow Button */}
-                        <button className="flex justify-center items-center bg-scheme-200 p-4 rounded-lg shadow hover:bg-scheme-300 transition-colors duration-200">
+                        <button className="flex justify-center items-center bg-scheme-200 p-4 rounded-lg shadow hover:bg-scheme-250 transition-colors duration-200">
                             <svg className="flex justify-center w-10 h-10 text-scheme-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                             </svg>
@@ -117,24 +127,14 @@ export default function Dashboard() {
                     </div>
                 </section>
 
-                <hr className="border border-scheme-200 mb-4" />
+                <hr className="border border-scheme-200 mb-4 mx-8" />
 
-                {/* Folder Structure */}
+                {/* Folder Structure, in the left half of the screen */}
                 <section>
-                    <h2 className="text-xl font-semibold mb-4 text-scheme-500">All Files</h2>
+                    <h2 className="text-xl font-semibold px-16 mb-4 text-scheme-500">All Files</h2>
                     <FileStructure />
                 </section>
             </div>
-
-            {/* Overlay */}
-            {
-                isSidebarOpen && (
-                    <div
-                        className="fixed inset-0 bg-transparent bg-opacity-0 transition-opacity"
-                        onClick={() => setIsSidebarOpen(false)}
-                    />
-                )
-            }
         </div >
     );
 }
