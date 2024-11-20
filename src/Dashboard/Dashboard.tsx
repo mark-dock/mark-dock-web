@@ -29,7 +29,7 @@ export default function Dashboard() {
         <div className="relative min-h-screen bg-scheme-100">
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed z-20 top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 <div className="p-6 min-h-screen text-scheme-500">
@@ -59,13 +59,6 @@ export default function Dashboard() {
                         onClick={() => setIsSidebarOpen(false)}
                     />
                 )}
-                {/* Sidebar - update z-index to be above overlay */}
-                <div
-                    className={`fixed top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out z-20 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                        }`}
-                >
-                    {/* Rest of sidebar content remains the same */}
-                </div>
                 {/* Top Bar */}
                 <div className="flex px-16 py-6 justify-between items-center mb-8 bg-scheme-200">
                     {/* Organization Info */}
