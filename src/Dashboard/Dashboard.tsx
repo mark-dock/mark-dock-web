@@ -66,7 +66,7 @@ export default function Dashboard() {
                         onClick={() => setIsSidebarOpen(true)}
                         className="flex items-center hover:bg-scheme-250 rounded-lg p-2 transition-colors duration-200"
                     >
-                        <img src="/api/placeholder/40/40" alt="Organization Logo" className="w-10 h-10 rounded-full" />
+                        <img src="/images/org.jpg" alt="Organization Logo" className="w-10 h-10 rounded-full" />
                         <div className="ml-3 flex flex-col items-start">
                             <h1 className="text-xl font-bold text-scheme-500">Organization Name</h1>
                             <p className="text-sm text-scheme-400">Access Level</p>
@@ -97,7 +97,7 @@ export default function Dashboard() {
                                 <p className="font-medium text-scheme-500">{userInfo?.name}</p>
                                 <p className="text-sm text-scheme-400">{userInfo?.email}</p>
                             </span>
-                            <img src="/api/placeholder/40/40" alt="User Avatar" className="w-10 h-10 rounded-full" />
+                            <img src="/images/avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" />
                         </button>
                     </div>
                 </div>
@@ -122,10 +122,15 @@ export default function Dashboard() {
 
                 <hr className="border border-scheme-200 mb-4 mx-8" />
 
-                {/* Folder Structure, in the left half of the screen */}
-                <section>
-                    <h2 className="text-xl font-semibold px-16 mb-4 text-scheme-500">All Files</h2>
-                    <FileStructure />
+                {/* Folder Structure */}
+                <section className="flex">
+                    <div className="w-1/2">
+                        <h2 className="text-xl font-semibold px-16 mb-4 text-scheme-500">All Files</h2>
+                        <FileStructure />
+                    </div>
+                    <div className="w-1/2">
+                        <h2 className="text-xl font-semibold px-16 mb-4 text-scheme-500">Something Else?</h2>
+                    </div>
                 </section>
             </div>
         </div >
