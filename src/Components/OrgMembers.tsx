@@ -3,6 +3,7 @@ import React from 'react';
 interface Member {
     userId: string;
     access: string;
+    userName: string;
 }
 
 interface OrganizationMembersProps {
@@ -16,7 +17,7 @@ const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
             <ul className="list-disc pl-6">
                 {members.map((member) => (
                     <li key={member.userId}>
-                        User ID: {member.userId}, Access: {member.access}
+                        User ID: {member.userId}, Access: {member.access}, Name: {member.userName}
                     </li>
                 ))}
             </ul>

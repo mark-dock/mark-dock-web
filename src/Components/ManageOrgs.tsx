@@ -7,6 +7,7 @@ import OrgInviteLinks from "./OrgInviteLinks";
 interface Member {
     userId: string;
     access: string;
+    userName: string;
 }
 
 interface Organization {
