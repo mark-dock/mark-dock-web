@@ -8,7 +8,6 @@ export default function UserSettings() {
         <div>
             <h1>User Settings</h1>
 
-            <h1>Organization Settings</h1>
             <ManageOrgs />
         </div>
     );

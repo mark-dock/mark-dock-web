@@ -41,40 +41,58 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ orgId }) => {
     fetchInviteLinks();
   }, [orgId]);
 
+  const handleDelete = (inviteToken: string) => {
+    // Your delete functionality here
+    console.log(`Deleting invite with token: ${inviteToken}`);
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="mt-4">
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="text-scheme-500">Loading...</div>
       ) : error ? (
         <div className="text-red-600">{error}</div>
       ) : inviteLinks.length === 0 ? (
-        <div>No invite links available</div>
+        <div className="text-scheme-400">No invite links available</div>
       ) : (
         <div>
-          <h3 className="font-bold">Invite Links:</h3>
-          <ul className="list-disc pl-6">
+          <h3 className="text-xl font-semibold text-scheme-500">Invite Links:</h3>
+          <div className="space-y-4"> {/* Added space-y-4 for vertical spacing */}
             {inviteLinks.map((invite) => (
-              <li key={invite.inviteToken} className="my-2">
-                <p>
-                  <strong>Access ID:</strong> {invite.accessId}
-                </p>
-                <p>
-                  <strong>Invite Link:</strong>{" "}
-                  <a href={invite.inviteLink} target="_blank" rel="noopener noreferrer">
-                    {invite.inviteLink}
-                  </a>
-                </p>
-                <p>
-                  <strong>Current Count:</strong> {invite.currentCount} / {invite.maxCount}
-                </p>
-                {invite.expiresAt && (
-                  <p>
-                    <strong>Expires At:</strong> {new Date(invite.expiresAt).toLocaleString()}
+              <div key={invite.inviteToken} className="border rounded-md shadow-sm p-4 flex justify-between items-center">
+                <div>
+                  <p className="text-sm text-scheme-500">
+                    <strong className="font-semibold">Access ID:</strong> {invite.accessId}
                   </p>
-                )}
-              </li>
+                  <p className="text-sm text-scheme-500">
+                    <strong className="font-semibold">Invite Link:</strong>{" "}
+                    <a
+                      href={invite.inviteLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-500"
+                    >
+                      {invite.inviteLink}
+                    </a>
+                  </p>
+                  <p className="text-sm text-scheme-500">
+                    <strong className="font-semibold">Current Count:</strong> {invite.currentCount} / {invite.maxCount}
+                  </p>
+                  {invite.expiresAt && (
+                    <p className="text-sm text-scheme-500">
+                      <strong className="font-semibold">Expires At:</strong> {new Date(invite.expiresAt).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => handleDelete(invite.inviteToken)}
+                  className="ml-4 text-red-600 hover:text-red-500 transition-all duration-200"
+                >
+                  Delete
+                </button>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
     </div>
@@ -82,4 +100,5 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ orgId }) => {
 };
 
 export default OrgInviteLinks;
+
 
