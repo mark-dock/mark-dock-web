@@ -25,7 +25,7 @@ export default function FileCard() {
                     <h3 className="font-medium">{cardInfo?.name}</h3>
                     <p className="text-sm text-gray-600">{cardInfo?.path}</p>
                 </div>
-                <img src="/api/placeholder/32/32" alt="Author Avatar" className="w-8 h-8 rounded-full" />
+                <img src="/images/avatar.jpg" alt="Author Avatar" className="w-8 h-8 rounded-full" />
             </div>
             <div className="flex flex-col justify-between items-start text-sm text-gray-600 pt-8">
                 <p>{('Updated by ').concat(cardInfo?.updatedBy)}</p>
