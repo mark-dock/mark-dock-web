@@ -60,6 +60,6 @@ export default function FileStructure() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

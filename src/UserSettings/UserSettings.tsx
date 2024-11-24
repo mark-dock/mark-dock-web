@@ -1,11 +1,12 @@
-import React from 'react';
 import Logout from "../Components/Buttons/Logout";
+import { useState, useEffect } from 'react';
+import axiosInstance from "../Config/axiosInstance";
+import ManageOrgs from '../Components/ManageOrgs';
 
 export default function UserSettings() {
     return (
         <div>
             <h1>User Settings</h1>
-
             <form>
                 <div>
                     <label htmlFor="name">Name</label>
@@ -25,6 +26,7 @@ export default function UserSettings() {
                 <button>Save</button>
             </form>
             <Logout />
+            <ManageOrgs />
         </div>
     );
 }
