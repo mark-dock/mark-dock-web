@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../Config/axiosInstance';
 
 export default function FileCard() {
+    const navigate = useNavigate();
     const cardInfo = {
         name: 'README.md',
         path: '/docs/project-a/',
@@ -10,6 +12,7 @@ export default function FileCard() {
     }
 
     const openFile = async () => {
+        navigate('/editor');
         // const response = await axiosInstance.get('/file/read');
         // const data = await response.data;
         // console.log(data);

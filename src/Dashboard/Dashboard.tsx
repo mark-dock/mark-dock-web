@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
-import Logout from "../Components/Buttons/Logout";
 import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
@@ -24,6 +23,10 @@ export default function Dashboard() {
 
     const openUserSettings = () => {
         navigate('/usersettings');
+    }
+
+    const createFile = () => {
+        navigate('/editor');
     }
 
     return (
@@ -131,7 +134,10 @@ export default function Dashboard() {
                     </div>
                     <div className="w-1/3 mr-16">
                         <h2 className="text-xl font-semibold mb-4 text-scheme-500">Create</h2>
-                        <button className="flex items-center justify-start w-full bg-scheme-200 p-4 rounded-lg shadow hover:bg-scheme-250 transition-colors duration-200">
+                        <button
+                            onClick={() => createFile()}
+                            className="flex items-center justify-start w-full bg-scheme-200 p-4 rounded-lg shadow hover:bg-scheme-250 transition-colors duration-200"
+                        >
                             <svg className="w-5 h-5 text-scheme-400 mr-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
                             </svg>
