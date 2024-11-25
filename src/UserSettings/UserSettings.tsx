@@ -1,7 +1,7 @@
 import Logout from "../Components/Buttons/Logout";
 import { useState, useEffect } from 'react';
 import axiosInstance from "../Config/axiosInstance";
-import ManageOrgs from '../Components/ManageOrgs';
+import ManageOrgs from '../Components/Sidebar/ManageOrgs';
 
 export default function UserSettings() {
     return (

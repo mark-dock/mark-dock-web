@@ -5,7 +5,7 @@ import Logout from "../Components/Buttons/Logout";
 import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
-import ManageOrgs from "../Components/ManageOrgs";
+import ManageOrgs from "../Components/Sidebar/ManageOrgs";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -28,14 +28,13 @@ export default function Dashboard() {
 
     return (
         <div className="relative min-h-screen bg-scheme-100">
-            {/* Sidebar */}
             <div
-                className={`fixed z-20 top-0 left-0 h-full w-128 bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`w-96 fixed z-20 top-0 left-0 h-full bg-scheme-250 shadow-lg transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 <div className="p-6 min-h-screen text-scheme-500">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-scheme-500">Organization</h2>
+                        <h2 className="text-xl font-bold text-scheme-500">Workspace Menu</h2>
                         <button
                             onClick={() => setIsSidebarOpen(false)}
                             className="text-scheme-400 hover:text-scheme-500"
@@ -45,9 +44,15 @@ export default function Dashboard() {
                             </svg>
                         </button>
                     </div>
-                    <div className="space-y-6">
-                        <ManageOrgs />
-                        <CreateOrg />
+                    <div className="flex flex-col space-y-8">
+                        <div>
+                            <h3 className="text-lg font-semibold text-scheme-500 mb-2">Personal</h3>
+                            <p> ... </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-scheme-500 mb-2">Organizations</h3>
+                            <ManageOrgs/>
+                        </div>
                     </div>
                 </div>
             </div>
