@@ -3,6 +3,4 @@ export interface Organization {
     name: string;
     access: string;
     accessId: number;
-    createdAt: string;
-    updatedAt: string;
 }

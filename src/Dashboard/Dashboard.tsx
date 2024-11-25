@@ -5,8 +5,8 @@ import Logout from "../Components/Buttons/Logout";
 import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
-import ManageOrgs from "../Components/Sidebar/ManageOrgs";
-import PersonalSelection from "../Components/Sidebar/PersonalSelection";
+import OrganizationWorkspace from "../Components/Sidebar/OrganizationWorkspace";
+import PersonalSelection from "../Components/Sidebar/PersonalWorkspace";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-scheme-500 mb-2">Organizations</h3>
-                            <ManageOrgs/>
+                            <OrganizationWorkspace/>
                         </div>
                     </div>
                 </div>

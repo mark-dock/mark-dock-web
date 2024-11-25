@@ -1,22 +1,13 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../Config/axiosInstance";
-import OrganizationSelection from "./OrganizationSelection";
+import SelectionItem from "./WorkspaceSelection";
 import {Organization} from "../../Types/Organization/organization";
-import {useNavigate} from "react-router-dom";
 
-interface Member {
-    userId: string;
-    access: string;
-    userName: string;
-}
-
-export default function ManageOrgs() {
+export default function OrganizationWorkspace() {
     const [organizations, setOrganizations] = useState<Organization[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
 
-    // Fetch organizations
     useEffect(() => {
         const fetchOrganizations = async () => {
             try {
@@ -37,10 +28,6 @@ export default function ManageOrgs() {
         fetchOrganizations();
     }, []);
 
-    function handleSettingsClick(org: Organization) {
-        navigate(`/organization/${org.id}/settings`);
-    }
-
     return (
         <div>
             {isLoading ? (
@@ -48,14 +35,22 @@ export default function ManageOrgs() {
             ) : error ? (
                 <div className="text-red-600">{error}</div>
             ) : (
-                <ul>
+                <div>
                     {organizations.length === 0 ? (
                         <li className="text-scheme-300">You are not a part of any organizations.</li>
                     ) : (
                         organizations.map((org) =>
-                            <OrganizationSelection org={org} handleSettingsClick={handleSettingsClick} />
+                            <SelectionItem
+                                type="organization"
+                                data={{
+                                    id: org.id,
+                                    name: org.name,
+                                    access: org.access,
+                                    accessId: org.accessId,
+                                }}
+                            />
                         ))}
-                </ul>
+                </div>
             )}
         </div>
         );
