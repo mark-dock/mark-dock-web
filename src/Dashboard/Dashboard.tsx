@@ -6,6 +6,7 @@ import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
 import ManageOrgs from "../Components/Sidebar/ManageOrgs";
+import PersonalSelection from "../Components/Sidebar/PersonalSelection";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -47,7 +48,7 @@ export default function Dashboard() {
                     <div className="flex flex-col space-y-8">
                         <div>
                             <h3 className="text-lg font-semibold text-scheme-500 mb-2">Personal</h3>
-                            <p> ... </p>
+                            <PersonalSelection />
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-scheme-500 mb-2">Organizations</h3>
