@@ -1,11 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./Login/Login";
-import Home from "./Home/Home";
-import Dashboard from "./Dashboard/Dashboard";
-import UserSettings from "./UserSettings/UserSettings";
-import Register from "./Register/Register";
 import PublicRoute from "./Config/publicRoutes";
 import PrivateRoute from "./Config/privateRoutes";
+
+import Home from "./Home/Home";
+import Login from "./Login/Login";
+import Register from "./Register/Register";
+import Dashboard from "./Dashboard/Dashboard";
+import Editor from "./Editor/Editor";
+import UserSettings from "./UserSettings/UserSettings";
 import InvitePage from "./InvitePage";
 
 export default function App() {
@@ -48,6 +50,14 @@ export default function App() {
                         }
                     />
                     <Route
+                        path="/editor"
+                        element={
+                            <PrivateRoute>
+                                <Editor />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
                         path="/usersettings"
                         element={
                             <PrivateRoute>
@@ -63,9 +73,9 @@ export default function App() {
                             </PublicRoute>
                         }
                     />
-              </Route>
-          </Routes>
-      </BrowserRouter>
-  );
+                </Route>
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
