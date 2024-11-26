@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import FileCard from '../../Types/file_card';
-import { useEffect } from 'react';
 import TimeAgo from '../../Util/TimeStringConverter';
 
 export default function FileCardComponent({ file_card_info }: { file_card_info: FileCard }) {
@@ -9,10 +8,6 @@ export default function FileCardComponent({ file_card_info }: { file_card_info: 
     const openFile = async () => {
         navigate('/editor');
     };
-
-    useEffect(() => {
-        console.log(TimeAgo(file_card_info.updated_at));
-    }, [file_card_info]);
 
     return (
         <button
