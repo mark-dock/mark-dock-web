@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import FileCardComponent from "./FileCard";
 import FileCard from "../../Types/file_card";
 import axiosInstance from "../../Config/axiosInstance";
-import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 export default function RecentFiles() {
     const [documents, setDocuments] = useState<FileCard[]>([]);
@@ -27,6 +26,7 @@ export default function RecentFiles() {
             const content = data.documents.content.map((doc: any) => ({
                 id: doc.fileId,
                 name: doc.name,
+                folder_name: doc.folderName,
                 updated_user_name: doc.updatedUserId || null,
                 updated_at: doc.updatedAt,
             }));
@@ -75,6 +75,7 @@ export default function RecentFiles() {
                                     file_card_info={{
                                         id: doc.id,
                                         name: doc.name,
+                                        folder_name: doc.folder_name,
                                         updated_user_name: doc.updated_user_name,
                                         updated_at: doc.updated_at,
                                     }}

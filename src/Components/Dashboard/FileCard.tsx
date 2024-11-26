@@ -17,7 +17,9 @@ export default function FileCardComponent({ file_card_info }: { file_card_info: 
             <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col items-start">
                     <h3 className="font-medium">{file_card_info?.name}</h3>
-                    <p className="text-sm text-gray-600">/docs/project</p>
+                    {file_card_info.folder_name !== "root" && (
+                        <p className="text-sm text-gray-600">{file_card_info.folder_name}</p>
+                    )}
                 </div>
                 <img src="/images/avatar.jpg" alt="Author Avatar" className="w-8 h-8 rounded-full" />
             </div>
