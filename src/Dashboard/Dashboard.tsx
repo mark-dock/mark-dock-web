@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
-import Logout from "../Components/Buttons/Logout";
-import CreateOrg from "../Components/CreateOrg";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
 import OrganizationWorkspace from "../Components/Sidebar/OrganizationWorkspace";
@@ -11,6 +9,7 @@ import PersonalSelection from "../Components/Sidebar/PersonalWorkspace";
 export default function Dashboard() {
     const navigate = useNavigate();
     const [userInfo, setUserInfo] = useState<{ user_id: string; name: string; email: string } | null>(null);
+    const [workspaceInfo, setWorkspaceInfo] = useState<{ name: string; access: string } | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
@@ -20,7 +19,27 @@ export default function Dashboard() {
             setUserInfo(data);
         };
 
+        const fetchWorkspaceInfo = async () => {
+            const organizationId: string | null = localStorage.getItem(`selectedOrgId`)
+
+            if (organizationId !== null && organizationId !== "") {
+                const response = await axiosInstance.get(`/organization/${organizationId}/info`);
+                const data = await response.data;
+
+                setWorkspaceInfo({
+                    name: data.name,
+                    access: data.access_name,
+                });
+            } else {
+                setWorkspaceInfo({
+                    name: "Personal Workspace",
+                    access: "",
+                });
+            }
+        }
+
         fetchUserInfo();
+        fetchWorkspaceInfo();
     }, []);
 
     const openUserSettings = () => {
@@ -75,8 +94,10 @@ export default function Dashboard() {
                     >
                         <img src="/images/org.jpg" alt="Organization Logo" className="w-10 h-10 rounded-full" />
                         <div className="ml-3 flex flex-col items-start">
-                            <h1 className="text-xl font-bold text-scheme-500">Organization Name</h1>
-                            <p className="text-sm text-scheme-400">Access Level</p>
+                            <h1 className="text-xl font-bold text-scheme-500">{workspaceInfo?.name}</h1>
+                            {workspaceInfo?.access && (
+                                <p className="text-sm text-scheme-400">Access Level: {workspaceInfo.access}</p>
+                            )}
                         </div>
                     </button>
 

@@ -34,7 +34,7 @@ export default function SelectionItem({ type, data }: {
         if (type === "organization" && data) {
             return (
                 <p className="text-sm text-scheme-400">
-                    Access Level: {data.access?.charAt(0).toUpperCase() + data.access?.slice(1) || "Unknown"}
+                    Access Level: {data.access}
                 </p>
             );
         }

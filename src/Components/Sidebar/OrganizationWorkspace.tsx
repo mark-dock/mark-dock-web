@@ -37,10 +37,11 @@ export default function OrganizationWorkspace() {
             ) : (
                 <div>
                     {organizations.length === 0 ? (
-                        <li className="text-scheme-300">You are not a part of any organizations.</li>
+                        <p className="text-scheme-300">You are not a part of any organizations.</p>
                     ) : (
-                        organizations.map((org) =>
+                        organizations.map((org) => (
                             <SelectionItem
+                                key={org.id}
                                 type="organization"
                                 data={{
                                     id: org.id,
@@ -49,9 +50,10 @@ export default function OrganizationWorkspace() {
                                     accessId: org.accessId,
                                 }}
                             />
-                        ))}
+                        ))
+                    )}
                 </div>
             )}
         </div>
-        );
-    }
+    );
+}
