@@ -46,8 +46,19 @@ export default function Dashboard() {
         navigate('/usersettings');
     }
 
-    const createFile = () => {
-        navigate('/editor');
+    const createFile = async () => {
+        var organizationId = localStorage.getItem("selectedOrgId");
+        if (organizationId === null || organizationId === "") {
+            organizationId = 'user';
+        } else {
+            organizationId = 'organization/' + organizationId;
+        }
+        console.log(organizationId);
+        const response = await axiosInstance.post(`/document/${organizationId}/create`);
+        console.log(response);
+        const data = await response.data;
+        console.log(data);
+        navigate(`/editor/${data.document_id}`);
     }
 
     return (
@@ -75,7 +86,7 @@ export default function Dashboard() {
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-scheme-500 mb-2">Organizations</h3>
-                            <OrganizationWorkspace/>
+                            <OrganizationWorkspace />
                         </div>
                     </div>
                 </div>

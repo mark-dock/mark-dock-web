@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axiosInstance from "../Config/axiosInstance";
 import katex from "katex";
 import 'katex/dist/katex.min.css';
 import Prism from 'prismjs';
@@ -17,8 +19,54 @@ interface EditorProps {
 }
 
 export default function Editor({ initialValue = "", onChange }: EditorProps) {
+    const { documentId } = useParams();
     const [content, setContent] = useState(initialValue);
     const [preview, setPreview] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch document effect
+    useEffect(() => {
+        const fetchDocument = async () => {
+            if (!documentId) {
+                setError("No document ID provided");
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                setIsLoading(true);
+                const response = await axiosInstance.get(`/document/${documentId}`);
+
+                // Assuming the API returns the document content
+                setContent(response.data.content || "");
+                setIsLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch document:", err);
+                setError("Failed to load document");
+                setIsLoading(false);
+            }
+        };
+
+        fetchDocument();
+    }, [documentId]);
+
+    // Existing preview effect
+    useEffect(() => {
+        const previewHtml = parseMarkdown(content);
+        setPreview(previewHtml);
+        onChange?.(content);
+    }, [content, onChange]);
+
+    // If loading, return loading state
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    // If error, return error state
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     // Function to convert markdown to HTML-like preview
     const parseMarkdown = (text: string): string => {
@@ -36,7 +84,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
         const reduceLineBreaks = (text: string) => {
             // Split into paragraphs
             const paragraphs = text.split(/\n\s*\n/);
-            // Reduce line breaks: 1 break -> 0, 2 breaks -> 1, 3 breaks -> 2, etc.
+            // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
             return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
         };
 
