@@ -1,22 +1,14 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../Config/axiosInstance';
+import FileCard from '../../Types/file_card';
+import TimeAgo from '../../Util/TimeStringConverter';
 
-export default function FileCard() {
+export default function FileCardComponent({ file_card_info }: { file_card_info: FileCard }) {
     const navigate = useNavigate();
-    const cardInfo = {
-        name: 'README.md',
-        path: '/docs/project-a/',
-        updatedBy: 'Sarah Smith',
-        updatedAt: '2 hours ago'
-    }
 
     const openFile = async () => {
         navigate('/editor');
-        // const response = await axiosInstance.get('/file/read');
-        // const data = await response.data;
-        // console.log(data);
-    }
+    };
+
     return (
         <button
             onClick={() => openFile()}
@@ -24,15 +16,19 @@ export default function FileCard() {
         >
             <div className="flex justify-between items-start mb-3">
                 <div className="flex flex-col items-start">
-                    <h3 className="font-medium">{cardInfo?.name}</h3>
-                    <p className="text-sm text-gray-600">{cardInfo?.path}</p>
+                    <h3 className="font-medium">{file_card_info?.name}</h3>
+                    {file_card_info.folder_name !== "root" && (
+                        <p className="text-sm text-gray-600">{file_card_info.folder_name}</p>
+                    )}
                 </div>
                 <img src="/images/avatar.jpg" alt="Author Avatar" className="w-8 h-8 rounded-full" />
             </div>
             <div className="flex flex-col justify-between items-start text-sm text-gray-600 pt-8">
-                <p>{('Updated by ').concat(cardInfo?.updatedBy)}</p>
-                <p>{cardInfo?.updatedAt}</p>
+                {file_card_info?.updated_user_name && (
+                    <p>{('Updated by ').concat(file_card_info.updated_user_name)}</p>
+                )}
+                <p>{TimeAgo(file_card_info.updated_at)}</p>
             </div>
         </button>
     );
-}
+};
