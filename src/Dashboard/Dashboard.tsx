@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
-import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
 import OrganizationWorkspace from "../Components/Sidebar/OrganizationWorkspace";
 import PersonalSelection from "../Components/Sidebar/PersonalWorkspace";
+import RecentFiles from "../Components/Dashboard/RecentFiles";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -134,25 +134,8 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Recent Files Section */}
-                <section className="mb-8 px-16">
-                    <h2 className="text-xl font-semibold mb-4 text-scheme-500">Recent Files</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                        <FileCard />
-                        <FileCard />
-                        <FileCard />
-                        <FileCard />
-                        <FileCard />
-                        {/* Arrow Button */}
-                        <button className="flex justify-center items-center bg-scheme-200 p-4 rounded-lg shadow hover:bg-scheme-250 transition-colors duration-200">
-                            <svg className="flex justify-center w-10 h-10 text-scheme-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </section>
+                <RecentFiles />
 
-                <hr className="border border-scheme-200 mb-4 mx-8" />
 
                 {/* Folder Structure */}
                 <section className="flex">
