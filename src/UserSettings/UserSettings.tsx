@@ -1,7 +1,7 @@
 import Logout from "../Components/Buttons/Logout";
 import { useState, useEffect } from 'react';
 import axiosInstance from "../Config/axiosInstance";
-import ManageOrgs from '../Components/ManageOrgs';
+import OrganizationWorkspace from '../Components/Sidebar/OrganizationWorkspace';
 
 export default function UserSettings() {
     return (
@@ -26,7 +26,7 @@ export default function UserSettings() {
                 <button>Save</button>
             </form>
             <Logout />
-            <ManageOrgs />
+            <OrganizationWorkspace />
         </div>
     );
 }
