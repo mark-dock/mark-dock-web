@@ -16,7 +16,6 @@ export default function FileCard() {
         // const response = await axiosInstance.get('/file/read');
         // const data = await response.data;
         // console.log(data);
-        console.log('Opening file...');
     }
     return (
         <button

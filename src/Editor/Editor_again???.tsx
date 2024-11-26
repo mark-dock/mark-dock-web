@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import katex from "katex";
-import 'katex/dist/katex.min.css';
 
 interface EditorProps {
     initialValue?: string;
@@ -123,11 +122,6 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
             {/* Main content area */}
             <div className="flex flex-1 overflow-hidden">
-                {/* Preview Panel */}
-                <div
-                    className="w-1/2 px-32 mt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
-                    dangerouslySetInnerHTML={{ __html: preview }}
-                />
                 {/* Editor Panel */}
                 <div className="w-1/2 px-8 py-4 bg-scheme-100 text-scheme-500">
                     <textarea
@@ -137,6 +131,11 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                         placeholder="Type your markdown here..."
                     />
                 </div>
+                {/* Preview Panel */}
+                <div
+                    className="w-1/2 px-24 mt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
+                    dangerouslySetInnerHTML={{ __html: preview }}
+                />
             </div>
         </div>
     );
