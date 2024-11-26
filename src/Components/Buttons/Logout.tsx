@@ -13,6 +13,7 @@ export default function Logout() {
                 throw new Error('Logout failed');
             }
 
+            localStorage.clear();
             window.location.href = "/";
         } catch (error) {
             console.error('Error during logout:', error);
