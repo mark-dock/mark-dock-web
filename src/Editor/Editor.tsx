@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import katex from "katex";
 import 'katex/dist/katex.min.css';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+// Import language support as needed
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-bash';
 
 interface EditorProps {
     initialValue?: string;
@@ -23,8 +32,19 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 .replace(/'/g, "&#039;");
         };
 
+        // Reduce line breaks
+        const reduceLineBreaks = (text: string) => {
+            // Split into paragraphs
+            const paragraphs = text.split(/\n\s*\n/);
+            // Reduce line breaks: 1 break -> 0, 2 breaks -> 1, 3 breaks -> 2, etc.
+            return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
+        };
+
+        // First, reduce line breaks
+        const reducedText = reduceLineBreaks(text);
+
         // Split into blocks for processing
-        const blocks = text.split(/\n\s*\n/).map((block) => {
+        const blocks = reducedText.split(/\n\s*\n/).map((block) => {
             // If block is special (header, list, etc.), keep single line breaks
             if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
                 return block;
@@ -51,13 +71,30 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                     return `<span class="text-red-500">Error rendering math: ${math}</span>`;
                 }
             })
-            // Code blocks with reduced line spacing
+
+            // Code blocks with syntax highlighting
             .replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-                const escapedCode = escapeHtml(code.trim());
-                const languageDisplay = lang ? `<div class="bg-gray-900 text-gray-400 px-4 text-sm font-medium">${lang}</div>` : '';
-                return `<div class="rounded-lg bg-gray-900 overflow-hidden mt-2">
+                // Function to decode HTML entities
+                const decodeHtmlEntities = (text: string) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.innerHTML = text;
+                    return textArea.value;
+                };
+
+                const escapedCode = decodeHtmlEntities(code.trim());
+
+                // Validate and sanitize language
+                const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
+
+                // Fallback to unhighlighted if language is not supported
+                const highlightedCode = Prism.languages[validLang]
+                    ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
+                    : escapedCode;
+
+                const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
+                return `<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4">
             ${languageDisplay}
-            <pre class="bg-gray-900 text-white px-4 py-2 text-sm"><code>${escapedCode}</code></pre>
+            <pre class="bg-neutral-900 text-white px-4 text-sm leading-snug"><code class="language-${validLang}">${highlightedCode}</code></pre>
         </div>`;
             })
 
@@ -85,10 +122,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
             // Paragraphs (adjust line breaks)
             .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-                const newlines = match.split('\n').filter(line => line.trim() !== '').length;
-                // If more than one line break, adjust it for preview
-                const newSpacing = newlines > 1 ? `my-${newlines}` : 'my-4';
-                return match.trim() ? `<p class="${newSpacing}">${match}</p>` : '';
+                return match.trim() ? `<p>${match}</p>` : '';
             })
 
             // Clean up empty paragraphs
@@ -141,4 +175,3 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
         </div>
     );
 }
-
