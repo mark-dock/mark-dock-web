@@ -9,6 +9,7 @@ import Dashboard from "./Dashboard/Dashboard";
 import Editor from "./Editor/Editor";
 import UserSettings from "./UserSettings/UserSettings";
 import InvitePage from "./InvitePage";
+import OrgSettings from "./Components/OrgSettings";
 
 export default function App() {
     return (
@@ -73,6 +74,7 @@ export default function App() {
                             </PublicRoute>
                         }
                     />
+                    <Route path="/organization/:orgId/settings" element={<OrgSettings />} />
                 </Route>
             </Routes>
         </BrowserRouter>
