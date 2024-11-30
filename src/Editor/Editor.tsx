@@ -185,7 +185,11 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
     // Save document function
     const saveDocument = async () => {
         try {
-            await axiosInstance.patch(`/document/${documentId}/content`, { content });
+            await axiosInstance.patch(`/document/${documentId}/content`,
+                {
+                    content: content
+                }
+            );
             alert("Document saved successfully!");
         } catch (err) {
             console.error("Failed to save document:", err);
@@ -203,10 +207,10 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                     {/* Save Document */}
                     <button
                         onClick={saveDocument}
-                        className="flex px-8 items-center bg-saveGreen hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                        className="flex px-8 py-3 items-center bg-saveGreen hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
                     >
                         <Save size={24} />
-                        <span className="ml-2 text-medium font-medium">Save</span>
+                        <span className="ml-4 text-medium font-medium">Save</span>
                     </button>
                 </div>
                 {/* User Info */}

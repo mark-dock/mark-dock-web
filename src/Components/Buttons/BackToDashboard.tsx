@@ -16,7 +16,7 @@ export default function BackToDashboard() {
         <svg className="w-5 h-8" fill="none" stroke="black" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7" />
         </svg>
-        <span className="ml-2 text-medium font-medium">Back</span>
+        <span className="ml-3 text-medium font-medium">Back</span>
       </button>
     </div>
   );
