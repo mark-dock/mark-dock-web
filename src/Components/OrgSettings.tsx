@@ -26,9 +26,13 @@ const OrgSettings: React.FC = () => {
         <div>
             <h1>Organization Settings</h1>
             {organizationId && <p>Organization ID: {organizationId}</p>}
+<<<<<<< HEAD
             {settings.currentUserJoinedAt ? (
                 <p>Joined At: {settings.currentUserJoinedAt}</p>
             ) : "no date"}
+=======
+            {settings.currentUserJoinedAt && <p>Joined At: {new Date(settings.currentUserJoinedAt).toLocaleDateString()}</p>}
+>>>>>>> c8fc506 (Org settings frontend started)
             <OrgMembers members={settings?.members || []} />
             <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} />
 
