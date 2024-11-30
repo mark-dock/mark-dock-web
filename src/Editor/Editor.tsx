@@ -1,5 +1,5 @@
 import { Save } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../Config/axiosInstance";
 import HeaderUserButton from "../Components/Buttons/HeaderUserButton";
@@ -28,6 +28,9 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
     const [preview, setPreview] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const lineNumbersRef = useRef<HTMLDivElement>(null);
 
     // Function to convert markdown to HTML-like preview
     const parseMarkdown = (text: string): string => {
@@ -224,6 +227,23 @@ ${highlightedCode}
         }
     };
 
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        const lineNumbers = lineNumbersRef.current;
+
+        if (textarea && lineNumbers) {
+            const syncScroll = () => {
+                lineNumbers.scrollTop = textarea.scrollTop;
+            };
+
+            textarea.addEventListener('scroll', syncScroll);
+
+            return () => {
+                textarea.removeEventListener('scroll', syncScroll);
+            };
+        }
+    }, []);
+
     return (
         <div className="flex flex-col h-screen bg-scheme-100">
             {/* Top Bar */}
@@ -257,12 +277,23 @@ ${highlightedCode}
                     className="w-1/2 px-32 mt-4 pt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
                     dangerouslySetInnerHTML={{ __html: preview }}
                 />
-                {/* Editor Panel */}
-                <div className="w-1/2 px-8 py-4 bg-scheme-100 text-scheme-500">
+                {/* Editor Panel with Line Numbers */}
+                <div className="w-1/2 flex bg-scheme-100 mt-4">
+                    <div
+                        ref={lineNumbersRef}
+                        className="w-12 bg-scheme-200 text-right pr-2 py-4 select-none text-scheme-400 overflow-y-hidden"
+                    >
+                        {content.split('\n').map((_, index) => (
+                            <div key={index} className="font-mono text-base h-[1.5rem]">
+                                {index + 1}
+                            </div>
+                        ))}
+                    </div>
                     <textarea
+                        ref={textareaRef}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="w-full h-full resize-none p-4 font-mono text-base bg-scheme-100 focus:outline-none focus:ring-2 focus:ring-scheme-300"
+                        className="flex-1 resize-none p-4 font-mono text-base bg-scheme-100 text-scheme-500 focus:outline-none focus:ring-2 focus:ring-scheme-300 overflow-y-auto"
                         placeholder="Type your Markdown here..."
                     />
                 </div>
