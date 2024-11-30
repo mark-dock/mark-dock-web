@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
-import FileStructure from "../Components/FileStructure";
+import FileStructure from "../Components/FileStructure/FileStructure";
 import OrganizationWorkspace from "../Components/Sidebar/OrganizationWorkspace";
 import PersonalSelection from "../Components/Sidebar/PersonalWorkspace";
 import RecentFiles from "../Components/Dashboard/RecentFiles";
