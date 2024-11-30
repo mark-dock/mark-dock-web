@@ -3,22 +3,16 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
 import FileCard from "../Components/FileCard";
 import FileStructure from "../Components/FileStructure";
+import HeaderUserButton from "../Components/Buttons/HeaderUserButton";
 import OrganizationWorkspace from "../Components/Sidebar/OrganizationWorkspace";
 import PersonalSelection from "../Components/Sidebar/PersonalWorkspace";
 
 export default function Dashboard() {
     const navigate = useNavigate();
-    const [userInfo, setUserInfo] = useState<{ user_id: string; name: string; email: string } | null>(null);
     const [workspaceInfo, setWorkspaceInfo] = useState<{ name: string; access: string } | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            const response = await axiosInstance.get(`/user/info`);
-            const data = await response.data;
-            setUserInfo(data);
-        };
-
         const fetchWorkspaceInfo = async () => {
             const organizationId: string | null = localStorage.getItem(`selectedOrgId`)
 
@@ -38,7 +32,6 @@ export default function Dashboard() {
             }
         }
 
-        fetchUserInfo();
         fetchWorkspaceInfo();
     }, []);
 
@@ -47,17 +40,15 @@ export default function Dashboard() {
     }
 
     const createFile = async () => {
+        // TODO: Organization ID needs work on backend, uncomment when ready
         var organizationId = localStorage.getItem("selectedOrgId");
-        if (organizationId === null || organizationId === "") {
-            organizationId = 'user';
-        } else {
-            organizationId = 'organization/' + organizationId;
-        }
-        console.log(organizationId);
+        // if (organizationId === null || organizationId === "") {
+        organizationId = 'user';
+        // } else {
+        //     organizationId = 'organization/' + organizationId;
+        // }
         const response = await axiosInstance.post(`/document/${organizationId}/create`);
-        console.log(response);
         const data = await response.data;
-        console.log(data);
         navigate(`/editor/${data.document_id}`);
     }
 
@@ -132,17 +123,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* User Info */}
-                    <div className="flex items-center justify-between space-x-8">
-                        <button
-                            onClick={openUserSettings}
-                            className="flex items-center hover:bg-scheme-250 rounded-lg p-2 transition-colors duration-200">
-                            <span className="text-right mr-3">
-                                <p className="font-medium text-scheme-500">{userInfo?.name}</p>
-                                <p className="text-sm text-scheme-400">{userInfo?.email}</p>
-                            </span>
-                            <img src="/images/avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" />
-                        </button>
-                    </div>
+                    <HeaderUserButton />
                 </div>
 
                 {/* Recent Files Section */}

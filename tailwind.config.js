@@ -24,6 +24,8 @@ module.exports = {
         400: '#778da9',
         500: '#e0e1dd',
       },
+      saveGreen: '#b9ffb9',
+      backRed: '#ff8a8a',
     },
   },
   plugins: [

@@ -1,6 +1,9 @@
+import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../Config/axiosInstance";
+import HeaderUserButton from "../Components/Buttons/HeaderUserButton";
+import BackToDashboard from "../Components/Buttons/BackToDashboard";
 import katex from "katex";
 import 'katex/dist/katex.min.css';
 import Prism from 'prismjs';
@@ -24,49 +27,6 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
     const [preview, setPreview] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // Fetch document effect
-    useEffect(() => {
-        const fetchDocument = async () => {
-            if (!documentId) {
-                setError("No document ID provided");
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                setIsLoading(true);
-                const response = await axiosInstance.get(`/document/${documentId}`);
-
-                // Assuming the API returns the document content
-                setContent(response.data.content || "");
-                setIsLoading(false);
-            } catch (err) {
-                console.error("Failed to fetch document:", err);
-                setError("Failed to load document");
-                setIsLoading(false);
-            }
-        };
-
-        fetchDocument();
-    }, [documentId]);
-
-    // Existing preview effect
-    useEffect(() => {
-        const previewHtml = parseMarkdown(content);
-        setPreview(previewHtml);
-        onChange?.(content);
-    }, [content, onChange]);
-
-    // If loading, return loading state
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    // If error, return error state
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
 
     // Function to convert markdown to HTML-like preview
     const parseMarkdown = (text: string): string => {
@@ -179,28 +139,78 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
         return html;
     };
 
+    // Fetch document effect
+    useEffect(() => {
+        const fetchDocument = async () => {
+            if (!documentId) {
+                setError("No document ID provided");
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                setIsLoading(true);
+                const response = await axiosInstance.get(`/document/${documentId}/view`);
+
+                // API returns the document content
+                setContent(response.data.content || "");
+                setIsLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch document:", err);
+                setError("Failed to load document");
+                setIsLoading(false);
+            }
+        };
+
+        fetchDocument();
+    }, [documentId]);
+
+    // Existing preview effect
     useEffect(() => {
         const previewHtml = parseMarkdown(content);
         setPreview(previewHtml);
         onChange?.(content);
     }, [content, onChange]);
 
+    // If loading, return loading state
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    // If error, return error state
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    // Save document function
+    const saveDocument = async () => {
+        try {
+            await axiosInstance.patch(`/document/${documentId}/content`, { content });
+            alert("Document saved successfully!");
+        } catch (err) {
+            console.error("Failed to save document:", err);
+            alert("Failed to save document");
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen bg-scheme-100">
             {/* Top Bar */}
             <div className="flex px-16 py-6 justify-between items-center bg-scheme-200 shadow-md">
-                <button className="flex items-center hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200">
-                    <img src="/images/org.jpg" alt="Organization Logo" className="w-10 h-10 rounded-full" />
-                    <div className="ml-3 flex flex-col items-start">
-                        <h1 className="text-xl font-bold text-scheme-500">Organization Name</h1>
-                        <p className="text-sm text-scheme-400">Access Level</p>
-                    </div>
-                </button>
-                <div className="flex items-center justify-between space-x-8">
-                    <button className="flex items-center hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200">
-                        <img src="/images/avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" />
+                <div className="flex items-center space-x-8">
+                    {/* Back Button */}
+                    <BackToDashboard />
+                    {/* Save Document */}
+                    <button
+                        onClick={saveDocument}
+                        className="flex px-8 items-center bg-saveGreen hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                    >
+                        <Save size={24} />
+                        <span className="ml-2 text-medium font-medium">Save</span>
                     </button>
                 </div>
+                {/* User Info */}
+                <HeaderUserButton />
             </div>
 
             {/* Main content area */}
