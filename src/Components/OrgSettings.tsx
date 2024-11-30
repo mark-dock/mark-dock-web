@@ -26,7 +26,9 @@ const OrgSettings: React.FC = () => {
         <div>
             <h1>Organization Settings</h1>
             {organizationId && <p>Organization ID: {organizationId}</p>}
-            {settings.currentUserJoinedAt && <p>Joined At: {new Date(settings.currentUserJoinedAt).toLocaleDateString()}</p>}
+            {settings.currentUserJoinedAt ? (
+                <p>Joined At: {settings.currentUserJoinedAt}</p>
+            ) : "no date"}
             <OrgMembers members={settings?.members || []} />
             <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} />
 
