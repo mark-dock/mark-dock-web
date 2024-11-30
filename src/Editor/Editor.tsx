@@ -24,6 +24,7 @@ interface EditorProps {
 export default function Editor({ initialValue = "", onChange }: EditorProps) {
     const { documentId } = useParams();
     const [content, setContent] = useState(initialValue);
+    const [title, setTitle] = useState("");
     const [preview, setPreview] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -81,7 +82,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
             })
 
             // Code blocks with syntax highlighting
-            .replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
+            .replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_, lang, code) => {
                 // Function to decode HTML entities
                 const decodeHtmlEntities = (text: string) => {
                     const textArea = document.createElement('textarea');
@@ -91,19 +92,22 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
                 const escapedCode = decodeHtmlEntities(code.trim());
 
-                // Validate and sanitize language
+                // Validate language
                 const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
 
-                // Fallback to unhighlighted if language is not supported
+                // Fallback to javascript if language is not supported
                 const highlightedCode = Prism.languages[validLang]
                     ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
                     : escapedCode;
 
                 const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
-                return `<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4">
-            ${languageDisplay}
-            <pre class="bg-neutral-900 text-white px-4 text-sm leading-snug"><code class="language-${validLang}">${highlightedCode}</code></pre>
-        </div>`;
+                return (`<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
+${languageDisplay}
+<hr class="border-neutral-800 border-opacity-50 border-t-2 my-2" />
+<pre class="bg-neutral-900 text-white px-4 text-sm pb-4">
+<code class="language-${validLang}">
+${highlightedCode}
+</code></pre></div>`);
             })
 
             // Headers with proper sizing
@@ -127,14 +131,14 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
             // Italic
             .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-
-            // Paragraphs (adjust line breaks)
-            .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-                return match.trim() ? `<p>${match}</p>` : '';
-            })
-
-            // Clean up empty paragraphs
-            .replace(/<p>\s*<\/p>/g, '');
+        //
+        // // Paragraphs (adjust line breaks)
+        // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
+        //     return match.trim() ? `<p>${match}</p>` : '';
+        // })
+        //
+        // // Clean up empty paragraphs
+        // .replace(/<p>\s*<\/p>/g, '');
 
         return html;
     };
@@ -154,6 +158,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
                 // API returns the document content
                 setContent(response.data.content || "");
+                setTitle(response.data.name || "");
                 setIsLoading(false);
             } catch (err) {
                 console.error("Failed to fetch document:", err);
@@ -172,25 +177,26 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
         onChange?.(content);
     }, [content, onChange]);
 
-    // If loading, return loading state
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    // If error, return error state
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+    // // If loading, return loading state
+    // if (isLoading) {
+    //     return <div className="bg-scheme-100"></div>;
+    // }
+    //
+    // // If error, return error state
+    // if (error) {
+    //     return <div>Error: {error}</div>;
+    // }
 
     // Save document function
     const saveDocument = async () => {
         try {
-            await axiosInstance.patch(`/document/${documentId}/content`,
+            const response = await axiosInstance.patch(`/document/${documentId}/content`,
                 {
-                    content: content
+                    content: String(content)
                 }
             );
-            alert("Document saved successfully!");
+            console.log("Response:", response.data);
+            // alert("Document saved successfully!");
         } catch (err) {
             console.error("Failed to save document:", err);
             alert("Failed to save document");
@@ -207,12 +213,18 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                     {/* Save Document */}
                     <button
                         onClick={saveDocument}
-                        className="flex px-8 py-3 items-center bg-saveGreen hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                        className="flex px-8 py-3 items-center bg-saveGreen hover:bg-scheme-500 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
                     >
                         <Save size={24} />
                         <span className="ml-4 text-medium font-medium">Save</span>
                     </button>
                 </div>
+                {/* Editable Document Title */}
+                <input
+                    type="text"
+                    className="w-1/2 px-4 py-2 bg-scheme-100 text-scheme-500 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-scheme-300"
+                    placeholder="Document Title"
+                />
                 {/* User Info */}
                 <HeaderUserButton />
             </div>
@@ -221,7 +233,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
             <div className="flex flex-1 overflow-hidden">
                 {/* Preview Panel */}
                 <div
-                    className="w-1/2 px-32 mt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
+                    className="w-1/2 px-32 mt-4 pt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
                     dangerouslySetInnerHTML={{ __html: preview }}
                 />
                 {/* Editor Panel */}
@@ -230,7 +242,7 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full h-full resize-none p-4 font-mono text-base bg-scheme-100 focus:outline-none focus:ring-2 focus:ring-scheme-300"
-                        placeholder="Type your markdown here..."
+                        placeholder="Type your Markdown here..."
                     />
                 </div>
             </div>
