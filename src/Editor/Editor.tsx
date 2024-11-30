@@ -41,29 +41,35 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 .replace(/'/g, "&#039;");
         };
 
-        // Reduce line breaks
+        // Reduce line breaks (except for code blocks)
         const reduceLineBreaks = (text: string) => {
-            // Split into paragraphs
-            const paragraphs = text.split(/\n\s*\n/);
-            // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
-            return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
+            // // Split into paragraphs
+            // const paragraphs = text.split(/\n\s*\n/);
+            // // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
+            // return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
+            return text;
         };
 
         // First, reduce line breaks
         const reducedText = reduceLineBreaks(text);
 
-        // Split into blocks for processing
-        const blocks = reducedText.split(/\n\s*\n/).map((block) => {
-            // If block is special (header, list, etc.), keep single line breaks
-            if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
-                return block;
-            }
-            // For normal text, join lines within a block
-            return block.replace(/\n/g, " ");
-        });
+        // // Split into blocks for processing
+        // const blocks = reducedText.split(/\n\s*\n/).map((block) => {
+        //     // If block is code, keep line breaks
+        //     if (/^```/.test(block)) {
+        //         console.log(block);
+        //         return block;
+        //     }
+        //     // If block is special (header, list, etc.), keep single line breaks
+        //     if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
+        //         return block;
+        //     }
+        //     // For normal text, join lines within a block
+        //     return block.replace(/\n/g, " ");
+        // });
 
         // Rejoin blocks with adjusted newlines and process markdown
-        let html = blocks.join('\n')
+        let html = reducedText//blocks.join('\n')
             // Math blocks ($$...$$)
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
                 try {
@@ -103,8 +109,8 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
                 return (`<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
 ${languageDisplay}
-<hr class="border-neutral-800 border-opacity-50 border-t-2 my-2" />
-<pre class="bg-neutral-900 text-white px-4 text-sm pb-4">
+<hr class="border-neutral-800 border-opacity-50 border-t-2 mt-2 mb-12" />
+<pre class="bg-neutral-900 text-white px-4 text-sm pb-4 -mt-12">
 <code class="language-${validLang}">
 ${highlightedCode}
 </code></pre></div>`);
@@ -118,9 +124,24 @@ ${highlightedCode}
             .replace(/^##### (.*$)/gm, '<h5 class="text-lg font-bold my-2">$1</h5>')
             .replace(/^###### (.*$)/gm, '<h6 class="text-base font-bold my-2">$1</h6>')
 
-            // Lists (improved)
-            .replace(/^\s*[-*+]\s+(.*)$/gm, '<li class="ml-6">$1</li>')
-            .replace(/(<li[^>]*>.*<\/li>\n?)+/g, '<ul class="list-disc my-2 ml-6">$&</ul>')
+            .replace(/((?:^\d+\.\s.+$\n?)+)/gm, (match) => {
+                // Process ordered list items (only lines with text after the number)
+                const items = match
+                    .trim()
+                    .split("\n")
+                    .map(item => `<li class="py-1">${item.replace(/^\d+\.\s/, '')}</li>`)
+                    .join('');
+                return `<ol class="list-decimal ml-12 py-2">${items}</ol>`;
+            })
+            .replace(/((?:^\-\s.+$\n?)+)/gm, (match) => {
+                // Process unordered list items (only lines with text after the dash)
+                const items = match
+                    .trim()
+                    .split("\n")
+                    .map(item => `<li class="py-1">${item.replace(/^\-\s/, '')}</li>`)
+                    .join('');
+                return `<ul class="list-disc ml-12 py-2">${items}</ul>`;
+            })
 
             // Links
             .replace(/\[([^\]]+)\]\[([^\]]+)\]/g, '<a href="$2" class="text-blue-400 hover:underline">$1</a>')
