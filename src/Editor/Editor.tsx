@@ -1,6 +1,20 @@
+import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axiosInstance from "../Config/axiosInstance";
+import HeaderUserButton from "../Components/Buttons/HeaderUserButton";
+import BackToDashboard from "../Components/Buttons/BackToDashboard";
 import katex from "katex";
 import 'katex/dist/katex.min.css';
+import Prism from 'prismjs';
+import 'prismjs/themes/prism-tomorrow.css';
+// Import language support as needed
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-bash';
 
 interface EditorProps {
     initialValue?: string;
@@ -8,8 +22,12 @@ interface EditorProps {
 }
 
 export default function Editor({ initialValue = "", onChange }: EditorProps) {
+    const { documentId } = useParams();
     const [content, setContent] = useState(initialValue);
+    const [title, setTitle] = useState("");
     const [preview, setPreview] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     // Function to convert markdown to HTML-like preview
     const parseMarkdown = (text: string): string => {
@@ -23,8 +41,19 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 .replace(/'/g, "&#039;");
         };
 
+        // Reduce line breaks
+        const reduceLineBreaks = (text: string) => {
+            // Split into paragraphs
+            const paragraphs = text.split(/\n\s*\n/);
+            // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
+            return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
+        };
+
+        // First, reduce line breaks
+        const reducedText = reduceLineBreaks(text);
+
         // Split into blocks for processing
-        const blocks = text.split(/\n\s*\n/).map((block) => {
+        const blocks = reducedText.split(/\n\s*\n/).map((block) => {
             // If block is special (header, list, etc.), keep single line breaks
             if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
                 return block;
@@ -51,14 +80,34 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                     return `<span class="text-red-500">Error rendering math: ${math}</span>`;
                 }
             })
-            // Code blocks with reduced line spacing
-            .replace(/```(\w+)?\n([\s\S]*?)```/g, (_, lang, code) => {
-                const escapedCode = escapeHtml(code.trim());
-                const languageDisplay = lang ? `<div class="bg-gray-900 text-gray-400 px-4 text-sm font-medium">${lang}</div>` : '';
-                return `<div class="rounded-lg bg-gray-900 overflow-hidden mt-2">
-            ${languageDisplay}
-            <pre class="bg-gray-900 text-white px-4 py-2 text-sm"><code>${escapedCode}</code></pre>
-        </div>`;
+
+            // Code blocks with syntax highlighting
+            .replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_, lang, code) => {
+                // Function to decode HTML entities
+                const decodeHtmlEntities = (text: string) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.innerHTML = text;
+                    return textArea.value;
+                };
+
+                const escapedCode = decodeHtmlEntities(code.trim());
+
+                // Validate language
+                const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
+
+                // Fallback to javascript if language is not supported
+                const highlightedCode = Prism.languages[validLang]
+                    ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
+                    : escapedCode;
+
+                const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
+                return (`<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
+${languageDisplay}
+<hr class="border-neutral-800 border-opacity-50 border-t-2 my-2" />
+<pre class="bg-neutral-900 text-white px-4 text-sm pb-4">
+<code class="language-${validLang}">
+${highlightedCode}
+</code></pre></div>`);
             })
 
             // Headers with proper sizing
@@ -82,50 +131,109 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
 
             // Italic
             .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-
-            // Paragraphs (adjust line breaks)
-            .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-                const newlines = match.split('\n').filter(line => line.trim() !== '').length;
-                // If more than one line break, adjust it for preview
-                const newSpacing = newlines > 1 ? `my-${newlines}` : 'my-4';
-                return match.trim() ? `<p class="${newSpacing}">${match}</p>` : '';
-            })
-
-            // Clean up empty paragraphs
-            .replace(/<p>\s*<\/p>/g, '');
+        //
+        // // Paragraphs (adjust line breaks)
+        // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
+        //     return match.trim() ? `<p>${match}</p>` : '';
+        // })
+        //
+        // // Clean up empty paragraphs
+        // .replace(/<p>\s*<\/p>/g, '');
 
         return html;
     };
 
+    // Fetch document effect
+    useEffect(() => {
+        const fetchDocument = async () => {
+            if (!documentId) {
+                setError("No document ID provided");
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                setIsLoading(true);
+                const response = await axiosInstance.get(`/document/${documentId}/view`);
+
+                // API returns the document content
+                setContent(response.data.content || "");
+                setTitle(response.data.name || "");
+                setIsLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch document:", err);
+                setError("Failed to load document");
+                setIsLoading(false);
+            }
+        };
+
+        fetchDocument();
+    }, [documentId]);
+
+    // Existing preview effect
     useEffect(() => {
         const previewHtml = parseMarkdown(content);
         setPreview(previewHtml);
         onChange?.(content);
     }, [content, onChange]);
 
+    // // If loading, return loading state
+    // if (isLoading) {
+    //     return <div className="bg-scheme-100"></div>;
+    // }
+    //
+    // // If error, return error state
+    // if (error) {
+    //     return <div>Error: {error}</div>;
+    // }
+
+    // Save document function
+    const saveDocument = async () => {
+        try {
+            const response = await axiosInstance.patch(`/document/${documentId}/content`,
+                {
+                    content: String(content)
+                }
+            );
+            console.log("Response:", response.data);
+            // alert("Document saved successfully!");
+        } catch (err) {
+            console.error("Failed to save document:", err);
+            alert("Failed to save document");
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen bg-scheme-100">
             {/* Top Bar */}
             <div className="flex px-16 py-6 justify-between items-center bg-scheme-200 shadow-md">
-                <button className="flex items-center hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200">
-                    <img src="/images/org.jpg" alt="Organization Logo" className="w-10 h-10 rounded-full" />
-                    <div className="ml-3 flex flex-col items-start">
-                        <h1 className="text-xl font-bold text-scheme-500">Organization Name</h1>
-                        <p className="text-sm text-scheme-400">Access Level</p>
-                    </div>
-                </button>
-                <div className="flex items-center justify-between space-x-8">
-                    <button className="flex items-center hover:bg-scheme-300 rounded-lg p-2 transition-colors duration-200">
-                        <img src="/images/avatar.jpg" alt="User Avatar" className="w-10 h-10 rounded-full" />
+                <div className="flex items-center space-x-8">
+                    {/* Back Button */}
+                    <BackToDashboard />
+                    {/* Save Document */}
+                    <button
+                        onClick={saveDocument}
+                        className="flex px-8 py-3 items-center bg-saveGreen hover:bg-scheme-500 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                    >
+                        <Save size={24} />
+                        <span className="ml-4 text-medium font-medium">Save</span>
                     </button>
                 </div>
+                {/* Editable Document Title */}
+                <input
+                    type="text"
+                    className="w-1/2 px-4 py-2 bg-scheme-100 text-scheme-500 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-scheme-300"
+                    placeholder="Document Title"
+                />
+                {/* User Info */}
+                <HeaderUserButton />
             </div>
 
             {/* Main content area */}
             <div className="flex flex-1 overflow-hidden">
                 {/* Preview Panel */}
                 <div
-                    className="w-1/2 px-32 mt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
+                    className="w-1/2 px-32 mt-4 pt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
                     dangerouslySetInnerHTML={{ __html: preview }}
                 />
                 {/* Editor Panel */}
@@ -134,11 +242,10 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full h-full resize-none p-4 font-mono text-base bg-scheme-100 focus:outline-none focus:ring-2 focus:ring-scheme-300"
-                        placeholder="Type your markdown here..."
+                        placeholder="Type your Markdown here..."
                     />
                 </div>
             </div>
         </div>
     );
 }
-

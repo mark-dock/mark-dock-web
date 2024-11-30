@@ -51,7 +51,7 @@ export default function App() {
                         }
                     />
                     <Route
-                        path="/editor"
+                        path="/editor/:documentId"
                         element={
                             <PrivateRoute>
                                 <Editor />
@@ -67,9 +67,9 @@ export default function App() {
                         }
                     />
                     <Route
-                         path="invite"
-                         element={
-                             <PublicRoute>
+                        path="invite"
+                        element={
+                            <PublicRoute>
                                 <InvitePage />
                             </PublicRoute>
                         }

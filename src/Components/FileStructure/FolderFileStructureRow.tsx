@@ -16,7 +16,7 @@ export default function FolderFileStructureRow({ id, name, updatedAt, type }: Fo
 
     return (
         <button
-            className="flex w-full p-2 items-center justify-between hover:bg-scheme-250"
+            className="flex w-full p-2 items-center justify-between hover:bg-scheme-250 transition-colors duration-100 rounded-md"
             onClick={handleClick}
         >
             <div className="flex items-center">
