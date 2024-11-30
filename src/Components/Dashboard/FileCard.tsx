@@ -6,7 +6,9 @@ export default function FileCardComponent({ file_card_info }: { file_card_info: 
     const navigate = useNavigate();
 
     const openFile = async () => {
-        navigate('/editor');
+        if (file_card_info?.id) {
+            navigate(`/editor/${file_card_info.id}`);
+        }
     };
 
     return (
@@ -31,4 +33,4 @@ export default function FileCardComponent({ file_card_info }: { file_card_info: 
             </div>
         </button>
     );
-};
+}
