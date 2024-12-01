@@ -63,14 +63,12 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
                     buttonText="Delete"
                     color="red"
                     onPress={() => handleDelete(invite.inviteToken)}
-                    confirm={true} // Enables confirmation
                     confirmationText="Are you sure you want to delete this invite link"
                   />
                   <RectangleButton 
-                    buttonText="Delete"
-                    color="red"
+                    buttonText="Example No Confirm"
+                    color="green"
                     onPress={() => handleDelete(invite.inviteToken)}
-                
                   />
 
                 </div>

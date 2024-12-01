@@ -16,7 +16,7 @@ const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({ message, onCh
 
     return (
         <div className="space-y-4">
-            <p className="text-lg text-gray-800">{message}?</p>
+            <p className="text-lg">{message}?</p>
             <div className="flex space-x-4">
                 <RectangleButton
                     buttonText="Yes"

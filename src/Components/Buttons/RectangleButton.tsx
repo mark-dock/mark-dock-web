@@ -5,24 +5,22 @@ interface RectangleButtonProps {
   buttonText: string;
   color: string;
   onPress: () => void;
-  confirm?: boolean;
-  confirmationText?: string;
+  confirmationText?: string; // Only this prop is needed now
 }
 
 const RectangleButton: React.FC<RectangleButtonProps> = ({ 
   buttonText, 
   color, 
   onPress, 
-  confirm = false, 
   confirmationText 
 }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleClick = () => {
-    if (confirm) {
-      setShowConfirm(true); 
+    if (confirmationText) {
+      setShowConfirm(true); // Show confirmation dialog if confirmationText is provided
     } else {
-      onPress(); 
+      onPress(); // Directly run onPress if no confirmation is needed
     }
   };
 
@@ -33,9 +31,9 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
           message={confirmationText!} // confirmationText must be provided if confirm is true
           onChoice={(choice) => {
             if (choice === "Yes") {
-              onPress();
+              onPress(); // Run onPress if user confirms
             }
-            setShowConfirm(false); 
+            setShowConfirm(false); // Hide confirmation dialog
           }}
         />
       ) : (
@@ -51,4 +49,5 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
 };
 
 export default RectangleButton;
+
 
