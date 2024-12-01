@@ -4,9 +4,20 @@ import RectangleButton from './RectangleButton';
 interface ConfirmChoiceButtonProps {
     message: string;
     onChoice: (choice: 'Yes' | 'No') => void;
+    confirmationYesButtonColor: string;
+    confirmationYesTextColor: string;
+    confirmationNoButtonColor: string;
+    confirmationNoTextColor: string;
 }
 
-const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({ message, onChoice }) => {
+const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({
+  message, 
+  onChoice, 
+  confirmationYesButtonColor, 
+  confirmationYesTextColor, 
+  confirmationNoButtonColor, 
+  confirmationNoTextColor 
+}) => {
     const [choice, setChoice] = useState('');
 
     const handleChoiceClick = (selectedChoice: 'Yes' | 'No') => {
@@ -15,24 +26,28 @@ const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({ message, onCh
     };
 
     return (
-        <div className="space-y-4">
-            <p className="text-lg">{message}?</p>
-            <div className="flex space-x-4">
-                <RectangleButton
-                    buttonText="Yes"
-                    color="green"
-                    onPress={() => handleChoiceClick('Yes')}
-                />
-                <RectangleButton
-                    buttonText="No"
-                    color="red"
-                    onPress={() => handleChoiceClick('No')}
-                />
+        <div className="fixed inset-0 flex items-center justify-center bg-scheme-200 bg-opacity-80">
+            <div className="bg-scheme-250 p-6 rounded-lg shadow-lg max-w-sm w-full">
+                <div className="text-lg font-bold mb-4 text-center text-scheme-100">{message}?</div>
+                <div className="flex justify-center space-x-4">
+                    <RectangleButton
+                        buttonText="Yes"
+                        buttonTextColor={confirmationYesTextColor}  // Use provided Yes button text color
+                        buttonColor={confirmationYesButtonColor}  // Use provided Yes button color
+                        onPress={() => handleChoiceClick('Yes')}
+                    />
+                    <RectangleButton
+                        buttonText="No"
+                        buttonTextColor={confirmationNoTextColor}  // Use provided No button text color
+                        buttonColor={confirmationNoButtonColor}  // Use provided No button color
+                        onPress={() => handleChoiceClick('No')}
+                    />
+                </div>
             </div>
-            {choice && <p className="text-gray-600">Choice: {choice}</p>}
         </div>
     );
 };
 
 export default ConfirmChoiceButton;
+
 
