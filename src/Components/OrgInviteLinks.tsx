@@ -1,4 +1,5 @@
 import React from "react";
+import RectangleButton from "./Buttons/RectangleButton";
 
 interface InviteLink {
   inviteToken: string;
@@ -15,25 +16,27 @@ interface OrgInviteLinksProps {
 
 const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
   const handleDelete = (inviteToken: string) => {
-    // Your delete functionality here
     console.log(`Deleting invite with token: ${inviteToken}`);
   };
 
   return (
     <div className="mt-4">
       {inviteLinks.length === 0 ? (
-        <div className="text-scheme-400">No invite links available</div>
+        <div className="text-scheme-500">No invite links available</div>
       ) : (
         <div>
-          <h3 className="text-xl font-semibold text-scheme-100">Invite Links:</h3>
-          <div className="space-y-4"> {/* Added space-y-4 for vertical spacing */}
+          <h3 className="text-xl font-semibold text-scheme-500">Invite Links:</h3>
+          <div className="space-y-4">
             {inviteLinks.map((invite) => (
-              <div key={invite.inviteToken} className="border rounded-md shadow-sm p-4 flex justify-between items-center">
+              <div
+                key={invite.inviteToken}
+                className="border rounded-md shadow-sm p-4 flex justify-between items-center"
+              >
                 <div>
-                  <p className="text-sm text-scheme-100">
+                  <p className="text-sm text-scheme-500">
                     <strong className="font-semibold">Access ID:</strong> {invite.accessId}
                   </p>
-                  <p className="text-sm text-scheme-100">
+                  <p className="text-sm text-scheme-500">
                     <strong className="font-semibold">Invite Link:</strong>{" "}
                     <a
                       href={invite.inviteLink}
@@ -44,21 +47,33 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
                       {invite.inviteLink}
                     </a>
                   </p>
-                  <p className="text-sm text-scheme-100">
-                    <strong className="font-semibold">Current Count:</strong> {invite.currentCount} / {invite.maxCount}
+                  <p className="text-sm text-scheme-500">
+                    <strong className="font-semibold">Current Count:</strong>{" "}
+                    {invite.currentCount} / {invite.maxCount}
                   </p>
                   {invite.expiresAt && (
-                    <p className="text-sm text-scheme-100">
-                      <strong className="font-semibold">Expires At:</strong> {new Date(invite.expiresAt).toLocaleString()}
+                    <p className="text-sm text-scheme-500">
+                      <strong className="font-semibold">Expires At:</strong>{" "}
+                      {new Date(invite.expiresAt).toLocaleString()}
                     </p>
                   )}
                 </div>
-                <button
-                  onClick={() => handleDelete(invite.inviteToken)}
-                  className="ml-4 text-red-600 hover:text-red-500 transition-all duration-200"
-                >
-                  Delete
-                </button>
+                <div className="ml-4">
+                  <RectangleButton
+                    buttonText="Delete"
+                    color="red"
+                    onPress={() => handleDelete(invite.inviteToken)}
+                    confirm={true} // Enables confirmation
+                    confirmationText="Are you sure you want to delete this invite link"
+                  />
+                  <RectangleButton 
+                    buttonText="Delete"
+                    color="red"
+                    onPress={() => handleDelete(invite.inviteToken)}
+                
+                  />
+
+                </div>
               </div>
             ))}
           </div>
@@ -69,6 +84,9 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
 };
 
 export default OrgInviteLinks;
+
+
+
 
 
 
