@@ -4,6 +4,7 @@ import RectangleButton from './RectangleButton';
 interface ConfirmChoiceButtonProps {
     message: string;
     onChoice: (choice: 'Yes' | 'No') => void;
+    confirmationTextColor: string;
     confirmationYesButtonColor: string;
     confirmationYesTextColor: string;
     confirmationNoButtonColor: string;
@@ -13,6 +14,7 @@ interface ConfirmChoiceButtonProps {
 const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({
   message, 
   onChoice, 
+  confirmationTextColor,
   confirmationYesButtonColor, 
   confirmationYesTextColor, 
   confirmationNoButtonColor, 
@@ -26,9 +28,11 @@ const ConfirmChoiceButton: React.FC<ConfirmChoiceButtonProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-scheme-200 bg-opacity-80">
+        <div className="fixed inset-0 flex items-center justify-center bg-scheme-400 bg-opacity-80">
             <div className="bg-scheme-250 p-6 rounded-lg shadow-lg max-w-sm w-full">
-                <div className="text-lg font-bold mb-4 text-center text-scheme-100">{message}?</div>
+            <div className="text-lg font-bold mb-4 text-center" style={{ color: confirmationTextColor }}> 
+                    {message}?
+                </div>
                 <div className="flex justify-center space-x-4">
                     <RectangleButton
                         buttonText="Yes"

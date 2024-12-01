@@ -3,6 +3,7 @@ import ConfirmChoiceButton from "./ConfirmChoiceButton";
 
 interface ConfirmationProps {
   confirmationText: string;
+  confirmationTextColor?: string;
   confirmationYesButtonColor?: string;
   confirmationYesTextColor?: string;
   confirmationNoButtonColor?: string;
@@ -45,6 +46,7 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
             }
             setShowConfirm(false); // Hide confirmation dialog
           }}
+          confirmationTextColor={confirmation.confirmationTextColor || "black"} // Default to black
           confirmationYesButtonColor={confirmation.confirmationYesButtonColor || "green"}  // Default to green
           confirmationYesTextColor={confirmation.confirmationYesTextColor || "blue"} // Default to white
           confirmationNoButtonColor={confirmation.confirmationNoButtonColor || "red"}  // Default to red

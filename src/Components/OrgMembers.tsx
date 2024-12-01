@@ -1,4 +1,5 @@
 import React from 'react';
+import RectangleButton from './Buttons/RectangleButton';
 
 interface Member {
     userId: string;
@@ -26,12 +27,10 @@ const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
                             <p className="text-sm text-scheme-500">Joined At: {new Date(member.joinedAt).toLocaleDateString()}</p>
                         </div>
                         <div className="flex space-x-4">
-                            <button className="text-blue-600 hover:text-blue-500 transition-all duration-200">
-                                Update Role
-                            </button>
-                            <button className="text-red-600 hover:text-red-500 transition-all duration-200">
-                                Kick Member
-                            </button>
+                            <RectangleButton buttonText="Kick"
+                             buttonColor="red" 
+                             buttonTextColor="white"
+                              onPress={() => console.log(`Removing ${member.name}`)} />
                         </div>
                     </li>
                 ))}
