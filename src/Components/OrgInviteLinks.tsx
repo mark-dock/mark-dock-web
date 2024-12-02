@@ -1,5 +1,6 @@
 import React from "react";
 import RectangleButton from "./Buttons/RectangleButton";
+import axiosInstance from "../Config/axiosInstance";
 
 interface InviteLink {
   inviteToken: string;
@@ -12,11 +13,28 @@ interface InviteLink {
 
 interface OrgInviteLinksProps {
   inviteLinks: InviteLink[];
+  orgId: string;
 }
 
-const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
+const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) => {
   const handleDelete = (inviteToken: string) => {
-    console.log(`Deleting invite with token: ${inviteToken}`);
+    axiosInstance
+      .delete(`settings/organization/${orgId}/delete-invite-link?token=${inviteToken}`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleCreateInviteLink = async () => {
+    try {
+      const response = await axiosInstance.post(`organization/${orgId}/create-invite-link?accessId=3`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -25,6 +43,14 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
         <div className="text-scheme-500">No invite links available</div>
       ) : (
         <div>
+
+          <RectangleButton
+            buttonText="Create Invite Link"
+            buttonColor="red"
+            buttonTextColor="white"
+            onPress={() => handleCreateInviteLink()}
+          />
+
           <div className="text-xl font-semibold text-scheme-500 mb-4">Invite Links:</div>
           <div className="space-y-4">
             {inviteLinks.map((invite) => (
@@ -61,7 +87,6 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
                 <div className="ml-4">
                 <RectangleButton
                   buttonText="Delete"
-
                   buttonTextColor="white"
                   buttonColor="red"
  

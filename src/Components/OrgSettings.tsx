@@ -53,7 +53,9 @@ const OrgSettings: React.FC = () => {
             <OrgMembers members={settings?.members || []} />
           </div>
           <div className="mt-8">
-            <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} />
+          {orgId && (
+        <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} orgId={orgId} />
+          )}
           </div>
         </div>
       </div>
