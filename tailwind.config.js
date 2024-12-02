@@ -16,6 +16,7 @@ module.exports = {
       gray: colors.gray,
       blue: colors.blue,
       red: colors.red,
+      yellow: colors.yellow,
       neutral: colors.neutral,
       'scheme': {
         100: '#0d1b2a',
@@ -26,6 +27,8 @@ module.exports = {
         500: '#e0e1dd',
       },
       saveGreen: '#b9ffb9',
+      deleteRed: '#E63946',
+      hoverRed: '#D62839',
       backRed: '#ff8a8a',
     },
   },

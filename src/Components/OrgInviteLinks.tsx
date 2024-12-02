@@ -57,8 +57,7 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
         <div className="text-scheme-500">No invite links available
            <RectangleButton
             buttonText="Create Invite Link"
-            buttonColor="red"
-            buttonTextColor="white"
+            buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
             onPress={() => handleCreateInviteLink()}
           />
         </div>
@@ -66,8 +65,7 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
         <div>
           <RectangleButton
             buttonText="Create Invite Link"
-            buttonColor="red"
-            buttonTextColor="white"
+            buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
             onPress={() => handleCreateInviteLink()}
           />
           <div className="text-xl font-semibold text-scheme-500 mb-4">Invite Links:</div>
@@ -104,18 +102,12 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
                   )}
                 </div>
                 <div className="ml-4">
-                  <RectangleButton
+                <RectangleButton
                     buttonText="Delete"
-                    buttonTextColor="white"
-                    buttonColor="red"
+                    buttonClass="bg-deleteRed text-white hover:bg-hoverRed"
                     onPress={() => handleDelete(invite.inviteToken)}
                     confirmation={{
-                      confirmationText: "Are you sure you want to delete this invite link",
-                      confirmationTextColor: "white",
-                      confirmationYesButtonColor: "red",
-                      confirmationYesTextColor: "white",
-                      confirmationNoButtonColor: "blue",
-                      confirmationNoTextColor: "white",
+                      confirmationText: "Are you sure you want to delete this invite link?"
                     }}
                   />
                 </div>

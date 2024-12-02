@@ -27,9 +27,9 @@ const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
                             <p className="text-sm text-scheme-500">Joined At: {new Date(member.joinedAt).toLocaleDateString()}</p>
                         </div>
                         <div className="flex space-x-4">
-                            <RectangleButton buttonText="Kick"
-                             buttonColor="red" 
-                             buttonTextColor="white"
+                            <RectangleButton 
+                            buttonText="Kick"
+                             buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
                               onPress={() => console.log(`Removing ${member.name}`)} />
                         </div>
                     </li>
