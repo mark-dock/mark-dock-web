@@ -28,8 +28,8 @@ const OrgSettings: React.FC = () => {
 
     return (
         <div className="relative min-h-screen bg-scheme-100 flex justify-center items-center">
-        <div className="bg-dark-blue p-8 rounded-lg shadow-lg w-full max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        <div className="w-full max-w-4xl">
+          <div className="bg-scheme-200 p-12 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <img
               src={"/images/org.jpg"}
               alt={"Organization Logo"}
@@ -53,7 +53,9 @@ const OrgSettings: React.FC = () => {
             <OrgMembers members={settings?.members || []} />
           </div>
           <div className="mt-8">
-            <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} />
+          {orgId && (
+        <OrgInviteLinks inviteLinks={settings?.inviteLinks || []} orgId={orgId} />
+          )}
           </div>
         </div>
       </div>
