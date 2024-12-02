@@ -20,17 +20,17 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks }) => {
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 bg-scheme-200 rounded-lg p-12">
       {inviteLinks.length === 0 ? (
         <div className="text-scheme-500">No invite links available</div>
       ) : (
         <div>
-          <h3 className="text-xl font-semibold text-scheme-500">Invite Links:</h3>
+          <div className="text-xl font-semibold text-scheme-500 mb-4">Invite Links:</div>
           <div className="space-y-4">
             {inviteLinks.map((invite) => (
               <div
                 key={invite.inviteToken}
-                className="border rounded-md shadow-sm p-4 flex justify-between items-center"
+                className="flex justify-between items-center bg-scheme-300 rounded-lg p-4"
               >
                 <div>
                   <p className="text-sm text-scheme-500">

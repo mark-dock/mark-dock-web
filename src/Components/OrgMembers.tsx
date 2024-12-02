@@ -15,11 +15,11 @@ interface OrganizationMembersProps {
 
 const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
     return (
-        <div className="mt-4">
-            <h4 className="text-lg font-semibold text-scheme-500 mb-4">Members:</h4>
-            <ul className="space-y-4">
+        <div className="mt-4 bg-scheme-200 rounded-lg p-12">
+            <div className="text-xl font-semibold text-scheme-500 mb-4">Members:</div>
+            <ul className="space-y-4 bg-scheme-300 rounded-lg p-4">
                 {members.map((member) => (
-                    <li key={member.userId} className="flex justify-between items-center border p-4 rounded-md shadow-md">
+                    <li key={member.userId} className="flex justify-between items-center">
                         <div className="flex flex-col">
                             <p className="font-medium text-scheme-500">{member.name}</p>
                             <p className="text-sm text-scheme-500">Access: {member.permissionLevel}</p>
