@@ -185,26 +185,21 @@ ${highlightedCode}
         onChange?.(content);
     }, [content, onChange]);
 
-    // // If loading, return loading state
-    // if (isLoading) {
-    //     return <div className="bg-scheme-100"></div>;
-    // }
-    //
-    // // If error, return error state
-    // if (error) {
-    //     return <div>Error: {error}</div>;
-    // }
-
     // Save document function
     const saveDocument = async () => {
         try {
-            const response = await axiosInstance.patch(`/document/${documentId}/content`,
+            const contentResponse = await axiosInstance.patch(`/document/${documentId}/content`,
                 {
                     content: String(content)
                 }
             );
-            console.log("Response:", response.data);
-            // alert("Document saved successfully!");
+            console.log("Document Content Response:", contentResponse.data);
+            const nameResponse = await axiosInstance.patch(`/document/${documentId}/name`,
+                {
+                    newName: String(title)
+                }
+            );
+            console.log("Document Name Response:", nameResponse.data);
         } catch (err) {
             console.error("Failed to save document:", err);
             alert("Failed to save document");
@@ -249,6 +244,8 @@ ${highlightedCode}
                     type="text"
                     className="w-1/2 px-4 py-2 bg-scheme-100 text-scheme-500 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-scheme-300"
                     placeholder="Document Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                 />
                 {/* User Info */}
                 <HeaderUserButton />
