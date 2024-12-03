@@ -44,35 +44,42 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 .replace(/'/g, "&#039;");
         };
 
-        // Reduce line breaks (except for code blocks)
-        const reduceLineBreaks = (text: string) => {
-            // // Split into paragraphs
-            // const paragraphs = text.split(/\n\s*\n/);
-            // // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
-            // return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
-            return text;
-        };
+        let html = text;
 
-        // First, reduce line breaks
-        const reducedText = reduceLineBreaks(text);
+        // Step 1: Extract and preserve code blocks
+        const codeBlocks: string[] = [];
+        html = html.replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (fullMatch, lang, code) => {
+            const decodeHtmlEntities = (text: string) => {
+                const textArea = document.createElement('textarea');
+                textArea.innerHTML = text;
+                return textArea.value;
+            };
 
-        // // Split into blocks for processing
-        // const blocks = reducedText.split(/\n\s*\n/).map((block) => {
-        //     // If block is code, keep line breaks
-        //     if (/^```/.test(block)) {
-        //         console.log(block);
-        //         return block;
-        //     }
-        //     // If block is special (header, list, etc.), keep single line breaks
-        //     if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
-        //         return block;
-        //     }
-        //     // For normal text, join lines within a block
-        //     return block.replace(/\n/g, " ");
-        // });
+            const escapedCode = decodeHtmlEntities(code.trim());
 
-        // Rejoin blocks with adjusted newlines and process markdown
-        let html = reducedText//blocks.join('\n')
+            // Validate language
+            const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
+
+            // Fallback to javascript if language is not supported
+            const highlightedCode = Prism.languages[validLang]
+                ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
+                : escapedCode;
+
+            const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div><hr class="border-neutral-800 border-opacity-50 border-t-2 mt-2 mb-2" />` : '';
+            const processedBlock = `<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
+${languageDisplay}
+<pre class="bg-neutral-900 text-white px-4 text-sm pb-6 -mt-2">
+<code class="language-${validLang}">
+${highlightedCode}
+</code></pre></div>`;
+
+            // Store the processed block and replace with a placeholder
+            codeBlocks.push(processedBlock);
+            return `[[CODEBLOCK_${codeBlocks.length - 1}]]`;
+        });
+
+        // Step 2: Process other Markdown elements
+        html = html
             // Math blocks ($$...$$)
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
                 try {
@@ -88,35 +95,6 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 } catch (e) {
                     return `<span class="text-red-500">Error rendering math: ${math}</span>`;
                 }
-            })
-
-            // Code blocks with syntax highlighting
-            .replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_, lang, code) => {
-                // Function to decode HTML entities
-                const decodeHtmlEntities = (text: string) => {
-                    const textArea = document.createElement('textarea');
-                    textArea.innerHTML = text;
-                    return textArea.value;
-                };
-
-                const escapedCode = decodeHtmlEntities(code.trim());
-
-                // Validate language
-                const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
-
-                // Fallback to javascript if language is not supported
-                const highlightedCode = Prism.languages[validLang]
-                    ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
-                    : escapedCode;
-
-                const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
-                return (`<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
-${languageDisplay}
-<hr class="border-neutral-800 border-opacity-50 border-t-2 mt-2 mb-12" />
-<pre class="bg-neutral-900 text-white px-4 text-sm pb-4 -mt-12">
-<code class="language-${validLang}">
-${highlightedCode}
-</code></pre></div>`);
             })
 
             // Headers with proper sizing
@@ -155,17 +133,23 @@ ${highlightedCode}
 
             // Italic
             .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-        //
-        // // Paragraphs (adjust line breaks)
-        // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-        //     return match.trim() ? `<p>${match}</p>` : '';
-        // })
-        //
-        // // Clean up empty paragraphs
-        // .replace(/<p>\s*<\/p>/g, '');
+            //
+            // // Paragraphs (adjust line breaks)
+            // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
+            //     return match.trim() ? `<p>${match}</p>` : '';
+            // })
+            //
+            // // Clean up empty paragraphs
+            // .replace(/<p>\s*<\/p>/g, '');
+            ;
+
+        // Step 3: Reinsert code blocks
+        codeBlocks.forEach((block, index) => {
+            html = html.replace(`[[CODEBLOCK_${index}]]`, block);
+        });
 
         return html;
-    };
+    }
 
     // Fetch document effect
     useEffect(() => {
@@ -245,7 +229,7 @@ ${highlightedCode}
     }, []);
 
     return (
-        <div className="flex flex-col h-screen bg-scheme-100">
+        <div className="flex flex-col h-screen bg-scheme-250">
             {/* Top Bar */}
             <div className="flex px-16 py-6 justify-between items-center bg-scheme-200 shadow-md">
                 <div className="flex items-center space-x-8">
@@ -281,7 +265,7 @@ ${highlightedCode}
                 <div className="w-1/2 flex bg-scheme-100 mt-4">
                     <div
                         ref={lineNumbersRef}
-                        className="w-12 bg-scheme-200 text-right pr-2 py-4 select-none text-scheme-400 overflow-y-hidden"
+                        className="w-12 bg-scheme-250 text-right pr-2 py-4 select-none text-scheme-400 overflow-y-hidden"
                     >
                         {content.split('\n').map((_, index) => (
                             <div key={index} className="font-mono text-base h-[1.5rem]">
