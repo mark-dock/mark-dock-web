@@ -54,12 +54,8 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
   return (
     <div className="mt-4 bg-scheme-200 rounded-lg p-12">
       {links.length === 0 ? (
-        <div className="text-scheme-500">No invite links available
-           <RectangleButton
-            buttonText="Create Invite Link"
-            buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
-            onPress={() => handleCreateInviteLink()}
-          />
+        <div className="text-scheme-500">
+          No invite links available. Click the button below to create a new invite link.
         </div>
       ) : (
         <div>
