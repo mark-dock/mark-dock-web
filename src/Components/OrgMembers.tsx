@@ -1,4 +1,5 @@
 import React from 'react';
+import RectangleButton from './Buttons/RectangleButton';
 
 interface Member {
     userId: string;
@@ -14,24 +15,22 @@ interface OrganizationMembersProps {
 
 const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
     return (
-        <div className="mt-4">
-            <h4 className="text-lg font-semibold text-scheme-100 mb-4">Members:</h4>
-            <ul className="space-y-4">
+        <div className="mt-4 bg-scheme-200 rounded-lg p-12">
+            <div className="text-xl font-semibold text-scheme-500 mb-4">Members:</div>
+            <ul className="space-y-4 bg-scheme-300 rounded-lg p-4">
                 {members.map((member) => (
-                    <li key={member.userId} className="flex justify-between items-center border p-4 rounded-md shadow-md">
+                    <li key={member.userId} className="flex justify-between items-center">
                         <div className="flex flex-col">
-                            <p className="font-medium text-scheme-100">{member.name}</p>
-                            <p className="text-sm text-scheme-200">Access: {member.permissionLevel}</p>
-                            <p className="text-sm text-scheme-300">Email: {member.email}</p>
-                            <p className="text-sm text-scheme-300">Joined At: {new Date(member.joinedAt).toLocaleDateString()}</p>
+                            <p className="font-medium text-scheme-500">{member.name}</p>
+                            <p className="text-sm text-scheme-500">Access: {member.permissionLevel}</p>
+                            <p className="text-sm text-scheme-500">Email: {member.email}</p>
+                            <p className="text-sm text-scheme-500">Joined At: {new Date(member.joinedAt).toLocaleDateString()}</p>
                         </div>
                         <div className="flex space-x-4">
-                            <button className="text-blue-600 hover:text-blue-500 transition-all duration-200">
-                                Update Role
-                            </button>
-                            <button className="text-red-600 hover:text-red-500 transition-all duration-200">
-                                Kick Member
-                            </button>
+                            <RectangleButton buttonText="Kick"
+                             buttonColor="red" 
+                             buttonTextColor="white"
+                              onPress={() => console.log(`Removing ${member.name}`)} />
                         </div>
                     </li>
                 ))}
