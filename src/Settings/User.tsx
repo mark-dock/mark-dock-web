@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axiosInstance from "../Config/axiosInstance";
 import Logout from "../Components/Buttons/Logout";
 import UserInfo from "../Types/Settings/UserInfo";
+import RectangleButton from "../Components/Buttons/RectangleButton";
+import CreateOrgForm from "../Components/Forms/CreateOrgForm";
 
 const formatAccountType = (accountType: string): string => {
     return accountType
@@ -12,6 +14,7 @@ const formatAccountType = (accountType: string): string => {
 
 export default function UserSettings(): JSX.Element {
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const [isFormVisible, setIsFormVisible] = useState(false);
 
     useEffect(() => {
         const fetchUserInfo = async (): Promise<void> => {
@@ -40,7 +43,7 @@ export default function UserSettings(): JSX.Element {
                             alt={`${userInfo.name}'s Profile Picture`}
                             className="w-20 h-20 rounded-full"
                         />
-                        <Logout/>
+                        <Logout />
                     </div>
 
                     <div className="col-span-2">
@@ -49,8 +52,9 @@ export default function UserSettings(): JSX.Element {
                         </h2>
                         <p className="text-sm text-gray-200">User ID: {userInfo.user_id}</p>
                         <p className="text-sm text-gray-200">Email: {userInfo.email}</p>
-                        <p className="text-sm text-gray-200">Joined
-                            At: {new Date(userInfo.created_at).toLocaleDateString()}</p>
+                        <p className="text-sm text-gray-200">
+                            Joined At: {new Date(userInfo.created_at).toLocaleDateString()}
+                        </p>
                         <p className="text-sm text-gray-200">
                             Account Type: {formatAccountType(userInfo["Account Type"])}
                         </p>
@@ -59,11 +63,27 @@ export default function UserSettings(): JSX.Element {
 
                 <div className="bg-scheme-200 p-12 rounded-lg mt-8">
                     <div className="flex justify-center items-center mb-6">
-                        <p className="text-sm text-center text-gray-500">
-                            Settings coming soon! For now, you can log out using the button above.
-                        </p>
+                        <RectangleButton
+                            buttonText="Create New Organization"
+                            buttonClass="mt-4 bg-yellow text-white hover:bg-hoverYellow"
+                            onPress={() => setIsFormVisible(true)}
+                        />
                     </div>
                 </div>
+
+                {isFormVisible && (
+                <CreateOrgForm
+                    onSuccess={(orgName) => {
+                    console.log(`Successfully created: ${orgName}`);
+                    setIsFormVisible(false); // Close the form on success
+                    }}
+                    onFailure={(error) => console.error(error)}
+                    onCancel={() => setIsFormVisible(false)} // Close the form on cancel
+                    formTextClass="text-white"
+                    submitButtonClass="bg-yellow text-white hover:bg-hoverYellow"
+                    cancelButtonClass="bg-scheme-250 text-white hover:bg-scheme-hover250" 
+                />
+                )}
             </div>
         </div>
     );

@@ -53,7 +53,6 @@ return (
                                 Joined At: {new Date(member.joinedAt).toLocaleDateString()}
                             </p>
                         </div>
-                        <div className="flex space-x-4">
                             <RectangleButton
                                 buttonText="Kick"
                                 buttonClass="bg-red text-white hover:bg-hoverRed"
@@ -61,8 +60,7 @@ return (
                                 confirmation={{
                                     confirmationText: `Are you sure you want to remove ${member.name}?`,
                                 }}
-                            />
-                        </div>
+                            />                 
                     </li>
                 ))}
             </ul>
