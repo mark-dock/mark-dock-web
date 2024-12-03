@@ -80,6 +80,13 @@ ${highlightedCode}
 
         // Step 2: Process other Markdown elements
         html = html
+            // Escape HTML special characters
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+
             // Math blocks ($$...$$)
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
                 try {
@@ -133,14 +140,24 @@ ${highlightedCode}
 
             // Italic
             .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-            //
-            // // Paragraphs (adjust line breaks)
-            // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-            //     return match.trim() ? `<p>${match}</p>` : '';
-            // })
-            //
-            // // Clean up empty paragraphs
-            // .replace(/<p>\s*<\/p>/g, '');
+
+            // Strikethrough
+            .replace(/~~(.*?)~~/g, '<del>$1</del>')
+
+            // Inline code
+            .replace(/`(.*?)`/g, '<code class="bg-neutral-900 text-white px-2 py-1 rounded">$1</code>')
+
+            // Horizontal rule
+            .replace(/^\s*---\s*$/gm, '<hr class="border-scheme-500 border-opacity-50 border-t-2 mt-4 mb-4" />')
+
+            // Replace double-newlines with <br> tags
+            .replace(/\n\n/g, '<br>')
+
+            // When the only content on the line is a double space, replace it with a <br> tag
+            .replace(/^(  )$/gm, '<br><br>')
+
+            // Replace two trailing spaces with <br> tags
+            .replace(/  $/gm, '<br>')
             ;
 
         // Step 3: Reinsert code blocks

@@ -1,18 +1,26 @@
 # Header 1
 ## Header 2
-
 ### Header 3
 #### Header 4
 ##### Header 5
 ###### Header 6
 
 Body text
-(same line)
+(this text is on the same line)
 
-(different line)
+This text is a new line
+  
+Spaced line (the line above contains 2 spaces)
 
+**Bold**
 
-(spaced line)
+*Italic*
+
+[link](https://www.google.com)
+
+---
+
+Here is some `inline code`
 
 ```python
 # Sample file
@@ -22,10 +30,8 @@ for i in range(10):
     print(x)
 ```
 
-**Bold**
-*Italic*
-
-[link](https://www.google.com)
+$y = x^2$
+$$f(x) = 3x^2+8x-12$$
 
 1. one
 2. two
