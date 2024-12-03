@@ -43,8 +43,8 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
             setShowConfirm(false); // Hide confirmation dialog
           }}
           confirmationTextClass={confirmation.confirmationTextClass || "text-white"} // Default classes here if not specified
-          confirmationYesButtonClass={confirmation.confirmationYesButtonClass || "bg-red-600 text-white hover:bg-red-500"} 
-          confirmationNoButtonClass={confirmation.confirmationNoButtonClass || "bg-gray-600 text-white hover:bg-gray-500"}
+          confirmationYesButtonClass={confirmation.confirmationYesButtonClass || "bg-deleteRed text-white hover:bg-hoverRed"} 
+          confirmationNoButtonClass={confirmation.confirmationNoButtonClass || "bg-scheme-250 text-white hover:bg-scheme-hover250"}
         />
       ) : (
         <button

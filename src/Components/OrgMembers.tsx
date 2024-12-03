@@ -29,8 +29,11 @@ const OrgMembers: React.FC<OrganizationMembersProps> = ({ members }) => {
                         <div className="flex space-x-4">
                             <RectangleButton 
                             buttonText="Kick"
-                             buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
-                              onPress={() => console.log(`Removing ${member.name}`)} />
+                             buttonClass="bg-red text-white hover:bg-hoverRed"
+                              onPress={() => console.log(`Removing ${member.name}`)} 
+                              confirmation={{
+                                confirmationText: `Are you sure you want to remove ${member.name}?`,
+                             }}/>
                         </div>
                     </li>
                 ))}

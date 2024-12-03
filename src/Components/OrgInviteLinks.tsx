@@ -63,11 +63,6 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
         </div>
       ) : (
         <div>
-          <RectangleButton
-            buttonText="Create Invite Link"
-            buttonClass="bg-red-600 text-white hover:bg-red-500 hover:text-white"
-            onPress={() => handleCreateInviteLink()}
-          />
           <div className="text-xl font-semibold text-scheme-500 mb-4">Invite Links:</div>
           <div className="space-y-4">
             {links.map((invite) => (
@@ -104,7 +99,7 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
                 <div className="ml-4">
                 <RectangleButton
                     buttonText="Delete"
-                    buttonClass="bg-deleteRed text-white hover:bg-hoverRed"
+                    buttonClass="bg-red text-white hover:bg-hoverRed"
                     onPress={() => handleDelete(invite.inviteToken)}
                     confirmation={{
                       confirmationText: "Are you sure you want to delete this invite link?"
@@ -116,6 +111,11 @@ const OrgInviteLinks: React.FC<OrgInviteLinksProps> = ({ inviteLinks, orgId }) =
           </div>
         </div>
       )}
+      <RectangleButton
+            buttonText="Create Invite Link"
+            buttonClass="mt-4 bg-yellow text-white hover:bg-hoverYellow"
+            onPress={() => handleCreateInviteLink()}
+          />
     </div>
   );
 };
