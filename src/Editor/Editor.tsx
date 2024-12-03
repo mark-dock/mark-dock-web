@@ -1,4 +1,4 @@
-import { Save } from "lucide-react";
+import { Save, Trash2 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../Config/axiosInstance";
@@ -206,6 +206,18 @@ ${highlightedCode}
         }
     };
 
+    // Delete document function
+    const deleteDocument = async () => {
+        try {
+            const response = await axiosInstance.delete(`/document/${documentId}/delete`);
+            console.log("Document Deletion Response:", response.data);
+            window.location.href = "/dashboard";
+        } catch (err) {
+            console.error("Failed to delete document:", err);
+            alert("Failed to delete document");
+        }
+    };
+
     useEffect(() => {
         const textarea = textareaRef.current;
         const lineNumbers = lineNumbersRef.current;
@@ -247,6 +259,14 @@ ${highlightedCode}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
+                {/* Delete Document */}
+                <button
+                    onClick={() => deleteDocument()}
+                    className="flex px-8 py-3 items-center bg-backRed hover:bg-scheme-500 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                >
+                    <Trash2 size={24} />
+                    <span className="ml-4 text-medium font-medium">Delete Document</span>
+                </button>
                 {/* User Info */}
                 <HeaderUserButton />
             </div>
