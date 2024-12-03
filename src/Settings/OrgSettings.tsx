@@ -27,7 +27,7 @@ const OrgSettings: React.FC = () => {
     }, [orgId]);
 
     return (
-        <div className="relative min-h-screen bg-scheme-100 flex justify-center items-center">
+        <div className="relative min-h-screen bg-scheme-100 flex justify-center items-center mt-4 mb-4">
         <div className="w-full max-w-4xl">
           <div className="bg-scheme-200 p-12 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             <img

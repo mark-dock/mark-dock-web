@@ -25,7 +25,8 @@ module.exports = {
       },
       saveGreen: '#b9ffb9',
       deleteRed: '#E63946',
-
+      backRed: '#ff8a8a',
+      
       red: '#D62839',        
       hoverRed: '#FF4D4D',   
       green: '#2D8F3A',      
