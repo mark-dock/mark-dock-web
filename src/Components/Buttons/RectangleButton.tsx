@@ -3,27 +3,23 @@ import ConfirmChoiceButton from "./ConfirmChoiceButton";
 
 interface ConfirmationProps {
   confirmationText: string;
-  confirmationTextColor?: string;
-  confirmationYesButtonColor?: string;
-  confirmationYesTextColor?: string;
-  confirmationNoButtonColor?: string;
-  confirmationNoTextColor?: string;
+  confirmationTextClass?: string;
+  confirmationYesButtonClass?: string;
+  confirmationNoButtonClass?: string;
 }
 
 interface RectangleButtonProps {
   buttonText: string;
-  buttonTextColor: string;
-  buttonColor: string;
+  buttonClass: string; // Full class name for button styles
   onPress: () => void;
   confirmation?: ConfirmationProps; // Optional confirmation prop
 }
 
-const RectangleButton: React.FC<RectangleButtonProps> = ({ 
-  buttonText, 
-  buttonTextColor, 
-  buttonColor, 
-  onPress, 
-  confirmation 
+const RectangleButton: React.FC<RectangleButtonProps> = ({
+  buttonText,
+  buttonClass,
+  onPress,
+  confirmation,
 }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -46,16 +42,13 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
             }
             setShowConfirm(false); // Hide confirmation dialog
           }}
-          confirmationTextColor={confirmation.confirmationTextColor || "black"} // Default to black
-          confirmationYesButtonColor={confirmation.confirmationYesButtonColor || "green"}  // Default to green
-          confirmationYesTextColor={confirmation.confirmationYesTextColor || "blue"} // Default to white
-          confirmationNoButtonColor={confirmation.confirmationNoButtonColor || "red"}  // Default to red
-          confirmationNoTextColor={confirmation.confirmationNoTextColor || "white"} // Default to white
+          confirmationTextClass={confirmation.confirmationTextClass || "text-white"} // Default classes here if not specified
+          confirmationYesButtonClass={confirmation.confirmationYesButtonClass || "bg-deleteRed text-white hover:bg-hoverRed"} 
+          confirmationNoButtonClass={confirmation.confirmationNoButtonClass || "bg-scheme-250 text-white hover:bg-scheme-hover250"}
         />
       ) : (
         <button
-        className={`bg-${buttonColor}-600 text-${buttonTextColor} hover:bg-${buttonColor}-500 hover:text-${buttonTextColor} transition-all duration-200 px-6 py-2 rounded-md shadow-md`}
-
+          className={`${buttonClass} transition-all duration-200 px-6 py-2 rounded-md shadow-md`}
           onClick={handleClick}
         >
           {buttonText}
@@ -66,6 +59,7 @@ const RectangleButton: React.FC<RectangleButtonProps> = ({
 };
 
 export default RectangleButton;
+
 
 
 

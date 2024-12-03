@@ -50,7 +50,7 @@ const OrgSettings: React.FC = () => {
             </div>
           </div>
           <div className="mt-8">
-            <OrgMembers members={settings?.members || []} />
+            {orgId && <OrgMembers members={settings?.members || []} orgId={orgId} />}
           </div>
           <div className="mt-8">
           {orgId && (
