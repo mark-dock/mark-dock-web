@@ -38,11 +38,13 @@ export default function Dashboard() {
     const createFile = async () => {
         // TODO: Organization ID needs work on backend, uncomment when ready
         var organizationId = localStorage.getItem("selectedOrgId");
-        // if (organizationId === null || organizationId === "") {
-        organizationId = 'user';
-        // } else {
-        //     organizationId = 'organization/' + organizationId;
-        // }
+
+        if (organizationId === null || organizationId === "") {
+            organizationId = 'user';
+        } else {
+            organizationId = 'organization/' + organizationId;
+        }
+
         const response = await axiosInstance.post(`/document/${organizationId}/create`);
         const data = await response.data;
         navigate(`/editor/${data.document_id}`);

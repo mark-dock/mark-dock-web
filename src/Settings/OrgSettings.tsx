@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../Config/axiosInstance";
-import OrgMembers from "./OrgMembers";
-import OrgInviteLinks from "./OrgInviteLinks";
+import OrgMembers from "../Components/OrgMembers";
+import OrgInviteLinks from "../Components/OrgInviteLinks";
 
 const OrgSettings: React.FC = () => {
     const { orgId } = useParams<{ orgId: string }>();
