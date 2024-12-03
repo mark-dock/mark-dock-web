@@ -25,7 +25,7 @@ export default function SelectionItem({ type, data }: {
     };
 
     const handleSettingsClick = () => {
-        navigate(type === "organization" ? `/organization/${data?.id}/settings` : `/usersettings`);
+        navigate(type === "organization" ? `/settings/organization/${data?.id}` : `/settings/user`);
     };
 
     const getTitle = () => (type === "organization" ? data?.name || "Unnamed Organization" : "Personal Workspace");

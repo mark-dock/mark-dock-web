@@ -1,5 +1,5 @@
-import { Save } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Save, Trash2 } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axiosInstance from "../Config/axiosInstance";
 import HeaderUserButton from "../Components/Buttons/HeaderUserButton";
@@ -29,6 +29,9 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const lineNumbersRef = useRef<HTMLDivElement>(null);
+
     // Function to convert markdown to HTML-like preview
     const parseMarkdown = (text: string): string => {
         // Escape HTML special characters
@@ -41,35 +44,49 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 .replace(/'/g, "&#039;");
         };
 
-        // Reduce line breaks (except for code blocks)
-        const reduceLineBreaks = (text: string) => {
-            // // Split into paragraphs
-            // const paragraphs = text.split(/\n\s*\n/);
-            // // Reduce line breaks: 1 break -> 0, 2 breaks -> 1
-            // return paragraphs.map(p => p.trim()).filter(p => p).join('\n\n');
-            return text;
-        };
+        let html = text;
 
-        // First, reduce line breaks
-        const reducedText = reduceLineBreaks(text);
+        // Step 1: Extract and preserve code blocks
+        const codeBlocks: string[] = [];
+        html = html.replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (fullMatch, lang, code) => {
+            const decodeHtmlEntities = (text: string) => {
+                const textArea = document.createElement('textarea');
+                textArea.innerHTML = text;
+                return textArea.value;
+            };
 
-        // // Split into blocks for processing
-        // const blocks = reducedText.split(/\n\s*\n/).map((block) => {
-        //     // If block is code, keep line breaks
-        //     if (/^```/.test(block)) {
-        //         console.log(block);
-        //         return block;
-        //     }
-        //     // If block is special (header, list, etc.), keep single line breaks
-        //     if (/^(#{1,6} |[-*+] |\d+\.\s|```)/.test(block)) {
-        //         return block;
-        //     }
-        //     // For normal text, join lines within a block
-        //     return block.replace(/\n/g, " ");
-        // });
+            const escapedCode = decodeHtmlEntities(code.trim());
 
-        // Rejoin blocks with adjusted newlines and process markdown
-        let html = reducedText//blocks.join('\n')
+            // Validate language
+            const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
+
+            // Fallback to javascript if language is not supported
+            const highlightedCode = Prism.languages[validLang]
+                ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
+                : escapedCode;
+
+            const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div><hr class="border-neutral-800 border-opacity-50 border-t-2 mt-2 mb-2" />` : '';
+            const processedBlock = `<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
+${languageDisplay}
+<pre class="bg-neutral-900 text-white px-4 text-sm pb-6 -mt-2">
+<code class="language-${validLang}">
+${highlightedCode}
+</code></pre></div>`;
+
+            // Store the processed block and replace with a placeholder
+            codeBlocks.push(processedBlock);
+            return `[[CODEBLOCK_${codeBlocks.length - 1}]]`;
+        });
+
+        // Step 2: Process other Markdown elements
+        html = html
+            // Escape HTML special characters
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+
             // Math blocks ($$...$$)
             .replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
                 try {
@@ -85,35 +102,6 @@ export default function Editor({ initialValue = "", onChange }: EditorProps) {
                 } catch (e) {
                     return `<span class="text-red-500">Error rendering math: ${math}</span>`;
                 }
-            })
-
-            // Code blocks with syntax highlighting
-            .replace(/```([a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_, lang, code) => {
-                // Function to decode HTML entities
-                const decodeHtmlEntities = (text: string) => {
-                    const textArea = document.createElement('textarea');
-                    textArea.innerHTML = text;
-                    return textArea.value;
-                };
-
-                const escapedCode = decodeHtmlEntities(code.trim());
-
-                // Validate language
-                const validLang = lang && Prism.languages[lang] ? lang : 'javascript';
-
-                // Fallback to javascript if language is not supported
-                const highlightedCode = Prism.languages[validLang]
-                    ? Prism.highlight(escapedCode, Prism.languages[validLang], validLang)
-                    : escapedCode;
-
-                const languageDisplay = lang ? `<div class="bg-neutral-900 text-neutral-400 px-4 text-sm font-medium">${lang}</div>` : '';
-                return (`<div class="rounded-lg bg-neutral-900 overflow-hidden mt-4 pt-2 mb-4">
-${languageDisplay}
-<hr class="border-neutral-800 border-opacity-50 border-t-2 mt-2 mb-12" />
-<pre class="bg-neutral-900 text-white px-4 text-sm pb-4 -mt-12">
-<code class="language-${validLang}">
-${highlightedCode}
-</code></pre></div>`);
             })
 
             // Headers with proper sizing
@@ -152,17 +140,33 @@ ${highlightedCode}
 
             // Italic
             .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-        //
-        // // Paragraphs (adjust line breaks)
-        // .replace(/^(?!<[^>]*>)(.*$)/gm, (match) => {
-        //     return match.trim() ? `<p>${match}</p>` : '';
-        // })
-        //
-        // // Clean up empty paragraphs
-        // .replace(/<p>\s*<\/p>/g, '');
+
+            // Strikethrough
+            .replace(/~~(.*?)~~/g, '<del>$1</del>')
+
+            // Inline code
+            .replace(/`(.*?)`/g, '<code class="bg-neutral-900 text-white px-2 py-1 rounded">$1</code>')
+
+            // Horizontal rule
+            .replace(/^\s*---\s*$/gm, '<hr class="border-scheme-500 border-opacity-50 border-t-2 mt-4 mb-4" />')
+
+            // Replace double-newlines with <br> tags
+            .replace(/\n\n/g, '<br>')
+
+            // When the only content on the line is a double space, replace it with a <br> tag
+            .replace(/^(  )$/gm, '<br><br>')
+
+            // Replace two trailing spaces with <br> tags
+            .replace(/  $/gm, '<br>')
+            ;
+
+        // Step 3: Reinsert code blocks
+        codeBlocks.forEach((block, index) => {
+            html = html.replace(`[[CODEBLOCK_${index}]]`, block);
+        });
 
         return html;
-    };
+    }
 
     // Fetch document effect
     useEffect(() => {
@@ -198,34 +202,58 @@ ${highlightedCode}
         onChange?.(content);
     }, [content, onChange]);
 
-    // // If loading, return loading state
-    // if (isLoading) {
-    //     return <div className="bg-scheme-100"></div>;
-    // }
-    //
-    // // If error, return error state
-    // if (error) {
-    //     return <div>Error: {error}</div>;
-    // }
-
     // Save document function
     const saveDocument = async () => {
         try {
-            const response = await axiosInstance.patch(`/document/${documentId}/content`,
+            const contentResponse = await axiosInstance.patch(`/document/${documentId}/content`,
                 {
                     content: String(content)
                 }
             );
-            console.log("Response:", response.data);
-            // alert("Document saved successfully!");
+            console.log("Document Content Response:", contentResponse.data);
+            const nameResponse = await axiosInstance.patch(`/document/${documentId}/name`,
+                {
+                    newName: String(title)
+                }
+            );
+            console.log("Document Name Response:", nameResponse.data);
         } catch (err) {
             console.error("Failed to save document:", err);
             alert("Failed to save document");
         }
     };
 
+    // Delete document function
+    const deleteDocument = async () => {
+        try {
+            const response = await axiosInstance.delete(`/document/${documentId}/delete`);
+            console.log("Document Deletion Response:", response.data);
+            window.location.href = "/dashboard";
+        } catch (err) {
+            console.error("Failed to delete document:", err);
+            alert("Failed to delete document");
+        }
+    };
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        const lineNumbers = lineNumbersRef.current;
+
+        if (textarea && lineNumbers) {
+            const syncScroll = () => {
+                lineNumbers.scrollTop = textarea.scrollTop;
+            };
+
+            textarea.addEventListener('scroll', syncScroll);
+
+            return () => {
+                textarea.removeEventListener('scroll', syncScroll);
+            };
+        }
+    }, []);
+
     return (
-        <div className="flex flex-col h-screen bg-scheme-100">
+        <div className="flex flex-col h-screen bg-scheme-250">
             {/* Top Bar */}
             <div className="flex px-16 py-6 justify-between items-center bg-scheme-200 shadow-md">
                 <div className="flex items-center space-x-8">
@@ -245,7 +273,17 @@ ${highlightedCode}
                     type="text"
                     className="w-1/2 px-4 py-2 bg-scheme-100 text-scheme-500 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-scheme-300"
                     placeholder="Document Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                 />
+                {/* Delete Document */}
+                <button
+                    onClick={() => deleteDocument()}
+                    className="flex px-8 py-3 items-center bg-backRed hover:bg-scheme-500 rounded-lg p-2 transition-colors duration-200 text-scheme-100"
+                >
+                    <Trash2 size={24} />
+                    <span className="ml-4 text-medium font-medium">Delete Document</span>
+                </button>
                 {/* User Info */}
                 <HeaderUserButton />
             </div>
@@ -257,12 +295,23 @@ ${highlightedCode}
                     className="w-1/2 px-32 mt-4 pt-4 text-scheme-500 bg-scheme-200 overflow-y-auto shadow-md prose prose-lg"
                     dangerouslySetInnerHTML={{ __html: preview }}
                 />
-                {/* Editor Panel */}
-                <div className="w-1/2 px-8 py-4 bg-scheme-100 text-scheme-500">
+                {/* Editor Panel with Line Numbers */}
+                <div className="w-1/2 flex bg-scheme-100 mt-4">
+                    <div
+                        ref={lineNumbersRef}
+                        className="w-12 bg-scheme-250 text-right pr-2 py-4 select-none text-scheme-400 overflow-y-hidden"
+                    >
+                        {content.split('\n').map((_, index) => (
+                            <div key={index} className="font-mono text-base h-[1.5rem]">
+                                {index + 1}
+                            </div>
+                        ))}
+                    </div>
                     <textarea
+                        ref={textareaRef}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        className="w-full h-full resize-none p-4 font-mono text-base bg-scheme-100 focus:outline-none focus:ring-2 focus:ring-scheme-300"
+                        className="flex-1 resize-none p-4 font-mono text-base bg-scheme-100 text-scheme-500 focus:outline-none focus:ring-2 focus:ring-scheme-300 overflow-y-auto"
                         placeholder="Type your Markdown here..."
                     />
                 </div>
