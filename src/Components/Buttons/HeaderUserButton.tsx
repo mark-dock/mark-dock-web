@@ -16,7 +16,7 @@ export default function HeaderUserButton() {
   }, []);
 
   const openUserSettings = () => {
-    navigate('/usersettings');
+    navigate('/settings/user');
   }
 
   return (
