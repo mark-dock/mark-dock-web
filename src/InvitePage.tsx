@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import axiosInstance from "./Config/axiosInstance";
+import ConfirmChoiceButton from "./Components/Buttons/ConfirmChoiceButton";
 
 export default function InvitePage() {
     const [searchParams] = useSearchParams();
@@ -48,32 +49,33 @@ export default function InvitePage() {
         setMessage("You have declined the invitation.");
     };
 
+    const handleChoice = (choice: "Yes" | "No") => {
+        if (choice === "Yes") {
+            handleAcceptInvite();
+        } else {
+            handleDenyInvite();
+        }
+    };
+
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="w-full max-w-md p-6 bg-white shadow rounded-md">
+        <div className="fixed inset-0 flex items-center justify-center bg-scheme-400 bg-opacity-80">
+            <div className="bg-scheme-250 p-6 rounded-lg shadow-lg max-w-sm w-full">
                 {error ? (
-                    <div className="text-red-600">{error}</div>
+                    <div className="text-red-600 text-center mb-4">{error}</div>
                 ) : message ? (
-                    <div className="text-green-600">{message}</div>
+                    <div className="text-white font-semibold text-center mb-4">{message}</div>
                 ) : (
                     <>
-                        <h2 className="text-2xl font-semibold mb-4">Invitation to Join</h2>
-                        <p className="mb-4">You have been invited to join an organization. Would you like to accept or decline?</p>
-                        <div className="space-y-4">
-                            <button
-                                onClick={handleAcceptInvite}
-                                disabled={isProcessing}
-                                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
-                            >
-                                {isProcessing ? "Processing..." : "Accept Invitation"}
-                            </button>
-                            <button
-                                onClick={handleDenyInvite}
-                                disabled={isProcessing}
-                                className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 disabled:opacity-50"
-                            >
-                                Decline Invitation
-                            </button>
+                        <h2 className="text-2xl font-semibold mb-4 text-center text-white">Invitation to Join</h2>
+                        <p className="mb-4 text-center text-white">You have been invited to join an organization. Would you like to accept or decline?</p>
+                        <div className="flex justify-center space-x-4">
+                            <ConfirmChoiceButton
+                                message="Do you want to accept or decline the invitation?"
+                                onChoice={handleChoice}
+                                confirmationTextClass="text-white"
+                                confirmationYesButtonClass="bg-yellow text-white rounded hover:bg-hoverYellow"
+                                confirmationNoButtonClass="bg-text-scheme-250 text-white rounded hover:bg-hover250"
+                            />
                         </div>
                     </>
                 )}
@@ -81,5 +83,7 @@ export default function InvitePage() {
         </div>
     );
 }
+
+
 
                 
